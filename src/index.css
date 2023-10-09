@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,500&display=swap');
+
+#dot-grid {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url(https://compound.finance/images/pattern-large-dots.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  z-index: -1;
+}

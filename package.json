@@ -14,7 +14,8 @@
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "urql": "^4.0.5"
   },
   "devDependencies": {
     "@types/react": "latest",
