@@ -15,8 +15,11 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "@nanostores/react": "^0.7.1",
+    "nanostores": "^0.9.3",
     "react": "latest",
     "react-dom": "latest",
+    "recharts": "^2.8.0",
     "urql": "^4.0.5"
   },
   "devDependencies": {

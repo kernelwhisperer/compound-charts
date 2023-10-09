@@ -3,10 +3,12 @@ import Container from "@mui/material/Container"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import Link from "@mui/material/Link"
-import { Avatar, AvatarGroup, Badge, Paper, Stack, Tooltip } from "@mui/material"
+import { Avatar, AvatarGroup, Badge, Card, Paper, Skeleton, Stack, Tooltip } from "@mui/material"
 import query from "../api/markets"
-import { formatNumber } from "../utils/utils"
+import { formatNumber, wait } from "../utils/utils"
 import { RobotoMonoFF, RobotoSerifFF } from "../theme"
+import { RadialPercentage } from "../components/RadialPercentage"
+import { $loading } from "../stores/app"
 
 export function Statistic({ label, value, tokenSymbol, usdValue }: any) {
   return (
@@ -62,17 +64,24 @@ export function HomePage() {
   console.log(markets?.[0])
 
   useEffect(() => {
-    query().then(setMarkets)
+    $loading.set(true)
+    Promise.all([query(), wait(1_000)]).then(([markets]) => {
+      setMarkets(markets)
+      $loading.set(false)
+    })
   }, [setMarkets])
 
   return (
-    <>
+    <Stack gap={2} direction="row" flexWrap="wrap" justifyContent="center">
       {markets.length === 0 ? (
-        <Typography>Loading...</Typography>
+        <>
+          <Skeleton variant="rounded" height={240} width={360} />
+          <Skeleton variant="rounded" height={240} width={360} />
+        </>
       ) : (
-        <Stack gap={2} direction="row" flexWrap="wrap" justifyContent="center">
+        <>
           {markets.map((x) => (
-            <Paper
+            <Card
               variant="outlined"
               sx={{
                 padding: 2,
@@ -138,20 +147,24 @@ export function HomePage() {
                     tokenSymbol={x.configuration.baseToken.token.symbol}
                     usdValue={formatNumber(x.accounting.totalBaseBorrowUsd, 2, "compact")}
                   />
+                  <Statistic
+                    label="Utilization"
+                    value={
+                      <>
+                        <RadialPercentage percentage={x.accounting.utilization} />
+                        {formatNumber(x.accounting.utilization * 100, 2)}%
+                      </>
+                    }
+                  />
                 </Stack>
-                <Statistic
-                  label="Utilization"
-                  value={`${formatNumber(x.accounting.utilization * 100, 2)}%`}
-                />
-                <Typography></Typography>
                 {/* <Typography fontFamily={RobotoMonoFF}>
                   Collateral {formatNumber(x.accounting.collateralBalanceUsd, 2, "compact")} USD{" "}
                 </Typography> */}
               </Stack>
-            </Paper>
+            </Card>
           ))}
-        </Stack>
+        </>
       )}
-    </>
+    </Stack>
   )
 }

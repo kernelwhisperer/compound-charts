@@ -10,3 +10,49 @@
   position: absolute;
   z-index: -1;
 }
+
+.st0 {
+  fill: transparent;
+}
+
+.st1 {
+  fill-rule: evenodd;
+  clip-rule: evenodd;
+  fill: #00D395;
+  fill-opacity: 1;
+  stroke: #00D395;
+  stroke-width: 28px;
+}
+
+@keyframes loadingLogoAnim {
+  0% {
+    stroke-dasharray: 300%;
+    stroke-dashoffset: 0%;
+  }
+
+  40% {
+    fill-opacity: 0;
+  }
+
+  50% {
+    stroke-dashoffset: 300%;
+    fill-opacity: 0;
+  }
+
+  60% {
+    fill-opacity: 0;
+  }
+
+  100% {
+    stroke-dasharray: 300%;
+    stroke-dashoffset: 0%;
+  }
+}
+
+.loading-indicator-active path {
+  animation: loadingLogoAnim 2.5s infinite
+}
+
+.loading-indicator-inactive path {
+  animation: loadingLogoAnim 2.5s
+}
