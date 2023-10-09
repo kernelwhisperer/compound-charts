@@ -20,10 +20,19 @@ export default async function query() {
               name
               symbol
               id
+              decimals
             }
           }
         }
         creationBlockNumber
+        accounting {
+          collateralBalanceUsd
+          totalBaseBorrow
+          totalBaseBorrowUsd
+          totalBaseSupply
+          totalBaseSupplyUsd
+          utilization
+        }
       }
     }
   `
