@@ -1,9 +1,9 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles"
 
 import {
   experimental_extendTheme as extendTheme,
   Experimental_CssVarsProvider as CssVarsProvider,
-} from '@mui/material/styles';
+} from "@mui/material/styles"
 
 // A custom theme for this app
 const theme = extendTheme({
@@ -11,11 +11,11 @@ const theme = extendTheme({
     dark: {
       palette: {
         primary: {
-          main: "#444"
-        }
-      }
-    }
-  }
-});
+          main: "#444",
+        },
+      },
+    },
+  },
+})
 
-export default theme;
+export default theme

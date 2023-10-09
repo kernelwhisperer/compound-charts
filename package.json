@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -21,6 +23,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",
+    "prettier": "^3.0.3",
     "typescript": "latest",
     "vite": "latest"
   }

@@ -8,23 +8,25 @@ const client = createClient({
 })
 
 export default async function query() {
-  const graphQuery = gql`{
-    markets {
-      configuration {
-        name
-        symbol
-        baseToken {
-          id
-          token {
-            name
-            symbol
+  const graphQuery = gql`
+    {
+      markets {
+        configuration {
+          name
+          symbol
+          baseToken {
             id
+            token {
+              name
+              symbol
+              id
+            }
           }
         }
+        creationBlockNumber
       }
-      creationBlockNumber
     }
-  }`
+  `
   const response = await client.query(graphQuery, {}).toPromise()
 
   if (response.error) {
