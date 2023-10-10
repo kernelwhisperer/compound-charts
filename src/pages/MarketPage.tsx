@@ -96,39 +96,49 @@ export function MarketPage({ show }: any) {
           </Stack>
         </Stack>
       )}
-      {!market && [<Skeleton key={0} variant="rounded" height={54} width={300} />]}
-      {/* {market && (
-        <ResponsiveContainer minWidth={400} width={"100%"} height={400}>
-          <BarChart data={market.dailyUsage}>
-            <Bar dataKey="usage.uniqueUsersCount" fill="#8884d8" />
-            <XAxis
-              scale="time"
-              type="number"
-              dataKey="timestamp"
-              domain={['dataMin', 'dataMax']}
-              // axisLine={false}
-              // tickLine={false}
-              // interval={0}
-              // // tick={renderQuarterTick}
-              // height={1}
-              // scale="band"
-              // xAxisId="quarter"
-            
-            />
-            <YAxis orientation="right" domain={[0, 'dataMax + 20']}/>
-            <Tooltip />
-          </BarChart>
-        </ResponsiveContainer>
-      )} */}
-
-      <Typography variant="h6" fontFamily={RobotoSerifFF}>
-        Daily unique users
-      </Typography>
-      {usageStats ? (
-        <Chart data={usageStats.dailyUsage} significantDigits={0} unitLabel="" />
-      ) : (
-        <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-      )}
+      {!market && <Skeleton variant="rounded" height={54} width={300} />}
+      <AnimatedList
+        gap={4}
+        direction="row"
+        flexWrap="wrap"
+        show={show}
+        sx={{
+          "& > *": {
+            flex: 1,
+          },
+        }}
+      >
+        <div>
+          <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+            Transactions
+          </Typography>
+          {usageStats ? (
+            <Chart data={usageStats.txns} significantDigits={0} unitLabel="" />
+          ) : (
+            <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+          )}
+        </div>
+        <div>
+          <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+            Daily unique users
+          </Typography>
+          {usageStats ? (
+            <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="" />
+          ) : (
+            <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+          )}
+        </div>
+      </AnimatedList>
+      <div>
+        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+          Inflows and outflows
+        </Typography>
+        {usageStats ? (
+          <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="" />
+        ) : (
+          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+        )}
+      </div>
     </AnimatedList>
   )
 }

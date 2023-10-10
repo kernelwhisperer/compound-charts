@@ -88,7 +88,7 @@ export function HomePage({ show }: any) {
             <Skeleton key={5} variant="rounded" height={240} width={360} />,
           ]
         : markets.map((x) => (
-            <Tooltip title="Open detailed usage and accounting view.">
+            <Tooltip title="Open detailed usage and accounting view." key={x.configuration.symbol}>
               <Card
                 component={Link}
                 to={`/${x.configuration.id}`}
@@ -114,7 +114,6 @@ export function HomePage({ show }: any) {
                     backdropFilter: "blur(2px)",
                   },
                 })}
-                key={x.configuration.symbol}
               >
                 <Stack gap={2}>
                   <Stack gap={2} direction="row" alignItems="flex-start">

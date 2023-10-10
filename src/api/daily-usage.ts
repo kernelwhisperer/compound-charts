@@ -16,6 +16,9 @@ export default async function query(marketId: string) {
           day
           usage {
              uniqueUsersCount
+             transactionCount
+             supplyBaseCount
+             withdrawBaseCount
           }
         }
       }
@@ -30,7 +33,12 @@ export default async function query(marketId: string) {
 
   const { market } = response.data
 
-  market.dailyUsage = market.dailyUsage.map((x: any) => ({
+  market.txns = market.dailyUsage.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: parseInt(x.usage.transactionCount),
+  }))
+
+  market.uniqueUsers = market.dailyUsage.map((x: any) => ({
     time: parseInt(x.timestamp),
     value: parseInt(x.usage.uniqueUsersCount),
   }))

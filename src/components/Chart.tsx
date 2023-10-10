@@ -4,6 +4,7 @@ import { Box, Paper, useTheme } from "@mui/material"
 import { createChart, CrosshairMode, IChartApi } from "lightweight-charts"
 import React, { memo, MutableRefObject, useEffect, useRef } from "react"
 import { formatNumber } from "../utils/utils"
+import { RobotoMonoFF } from "../theme"
 
 // import { $timeframe } from "../stores/metric-page"
 // import { createPriceFormatter } from "../utils/chart"
@@ -23,6 +24,7 @@ export function Chart(props: ChartProps) {
   const theme = useTheme()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const chartRef = useRef<IChartApi>()
+  const legendRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -37,7 +39,6 @@ export function Chart(props: ChartProps) {
     const secondaryColor = theme.palette.secondary.main
     const textColor = theme.palette.text.primary
     const borderColor = theme.palette.divider
-    const bgColor = theme.palette.background.default
 
     chartRef.current = createChart(containerRef.current, {
       crosshair: {
@@ -82,8 +83,8 @@ export function Chart(props: ChartProps) {
       entireTextOnly: true,
       scaleMargins: {
         bottom: 0,
-        top: 0.1
-      }
+        top: 0.1,
+      },
     })
 
     window.addEventListener("resize", handleResize)
@@ -95,23 +96,57 @@ export function Chart(props: ChartProps) {
 
     mainSeries.setData(data)
 
+    chartRef.current.subscribeCrosshairMove((param: any) => {
+      let timeFormatted: any = ""
+      let priceFormatted = ""
+      if (param.time) {
+        const data: any = param.seriesData.get(mainSeries)
+        const price = data.value !== undefined ? data.value : data.close
+        priceFormatted = price.toFixed(significantDigits)
+        timeFormatted = new Intl.DateTimeFormat(window.navigator.language, {
+          dateStyle: "long",
+          hourCycle: "h23",
+          timeStyle: "short",
+        }).format(param.time * 1000)
+        ;(
+          legendRef.current as HTMLDivElement
+        ).innerHTML = `${timeFormatted} · <strong>${priceFormatted}</strong>`
+      } else {
+        ;(legendRef.current as HTMLDivElement).innerHTML = ""
+      }
+    })
+
     return function cleanup() {
       window.removeEventListener("resize", handleResize)
 
       chartRef.current?.remove()
     }
-  }, [chartRef, theme, containerRef])
+  }, [chartRef, theme, containerRef, legendRef])
 
   return (
     <Paper
       variant="outlined"
       sx={{
+        position: "relative",
         "& tr:first-of-type td": { cursor: "crosshair" },
         width: "100%",
         height: 400,
-        overflow: "hidden"
+        overflow: "hidden",
       }}
       ref={containerRef}
-    />
+    >
+      <div
+        ref={legendRef}
+        style={{
+          background: "var(--mui-palette-background-default)",
+          position: "absolute",
+          top: 8,
+          left: 8,
+          zIndex: 2,
+          fontSize: 13,
+          fontFamily: RobotoMonoFF,
+        }}
+      />
+    </Paper>
   )
 }
