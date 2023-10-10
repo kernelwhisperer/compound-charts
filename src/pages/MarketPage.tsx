@@ -134,7 +134,12 @@ export function MarketPage({ show }: any) {
           Inflows and outflows
         </Typography>
         {usageStats ? (
-          <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="inflows" />
+          <Chart
+            data={usageStats.inflows}
+            secondData={usageStats.outflows}
+            significantDigits={0}
+            unitLabel="inflows"
+          />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
         )}

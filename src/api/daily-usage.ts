@@ -43,5 +43,15 @@ export default async function query(marketId: string) {
     value: parseInt(x.usage.uniqueUsersCount),
   }))
 
+  market.inflows = market.dailyUsage.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: parseInt(x.usage.supplyBaseCount),
+  }))
+
+  market.outflows = market.dailyUsage.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: parseInt(x.usage.withdrawBaseCount) * -1,
+  }))
+
   return market
 }

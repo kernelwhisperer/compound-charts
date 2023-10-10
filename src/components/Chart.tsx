@@ -17,10 +17,11 @@ export type ChartProps = {
   compact?: boolean
   unitLabel?: string
   data: any[]
+  secondData?: any[]
 }
 
 export function Chart(props: ChartProps) {
-  const { data, significantDigits = 2, compact = false, unitLabel = "" } = props
+  const { data, secondData, significantDigits = 2, compact = false, unitLabel = "" } = props
 
   const theme = useTheme()
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -102,14 +103,38 @@ export function Chart(props: ChartProps) {
 
     mainSeries.setData(data)
 
+    let secondSeries
+
+    if (secondData) {
+      secondSeries = chartRef.current?.addHistogramSeries({
+        color: "#8f66ff",
+        // lineType: 2,
+        priceLineVisible: false,
+        // lastValueVisible: false
+      })
+
+      secondSeries.setData(secondData)
+    }
+
     $dataPoint.subscribe((dataPoint: any) => {
       if (dataPoint) {
-        const { value } = mainSeries.dataByIndex(dataPoint.logical) as any
-        ;(legendRef.current as HTMLDivElement).innerHTML = `${formatTime(
-          (dataPoint.time as number) * 1000
-        )} · <strong>${value.toFixed(significantDigits)} ${unitLabel}</strong>`
+        let { value } = mainSeries.dataByIndex(dataPoint.logical) as any
+        let style = ""
+
+        if (secondData) {
+          const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
+          value += secondValue
+          if(value === 0 ) style = '"color: #fff;"'
+          if(value < 0 ) style = '"color: #8f66ff;"'
+        }
+
+        let label = `${formatTime((dataPoint.time as number) * 1000)} · <strong style=${style}>${value.toFixed(
+          significantDigits
+        )} ${unitLabel}</strong>`
+
+        if (legendRef.current) legendRef.current.innerHTML = label
       } else {
-        ;(legendRef.current as HTMLDivElement).innerHTML = ""
+        if (legendRef.current) legendRef.current.innerHTML = ""
       }
     })
 
@@ -117,12 +142,23 @@ export function Chart(props: ChartProps) {
       $dataPoint.set(getCrosshairDataPoint(mainSeries, param))
 
       if (param.time) {
-        const { value } = param.seriesData.get(mainSeries) as any
-        ;(legendRef.current as HTMLDivElement).innerHTML = `${formatTime(
-          (param.time as number) * 1000
-        )} · <strong>${value.toFixed(significantDigits)} ${unitLabel}</strong>`
+        let { value } = param.seriesData.get(mainSeries) as any
+        let style = ""
+
+        if (secondData) {
+          const { value: secondValue } = param.seriesData.get(secondSeries) as any
+          value += secondValue
+          if(value === 0 ) style = '"color: #fff;"'
+          if(value < 0 ) style = '"color: #8f66ff;"'
+        }
+
+        let label = `${formatTime((param.time as number) * 1000)} · <strong style=${style}>${value.toFixed(
+          significantDigits
+        )} ${unitLabel}</strong>`
+
+        if (legendRef.current) legendRef.current.innerHTML = label
       } else {
-        ;(legendRef.current as HTMLDivElement).innerHTML = ""
+        if (legendRef.current) legendRef.current.innerHTML = ""
       }
     })
 
@@ -156,9 +192,9 @@ export function Chart(props: ChartProps) {
           zIndex: 2,
           fontSize: 13,
           fontFamily: RobotoMonoFF,
-          "&> strong" :{
-            color: theme.palette.secondary.main
-          }
+          "&> strong": {
+            color: theme.palette.secondary.main,
+          },
         }}
       />
     </Paper>
