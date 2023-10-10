@@ -113,7 +113,7 @@ export function MarketPage({ show }: any) {
             Transactions
           </Typography>
           {usageStats ? (
-            <Chart data={usageStats.txns} significantDigits={0} unitLabel="" />
+            <Chart data={usageStats.txns} significantDigits={0} unitLabel="txns" />
           ) : (
             <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
           )}
@@ -123,7 +123,7 @@ export function MarketPage({ show }: any) {
             Daily unique users
           </Typography>
           {usageStats ? (
-            <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="" />
+            <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="users" />
           ) : (
             <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
           )}
@@ -134,7 +134,7 @@ export function MarketPage({ show }: any) {
           Inflows and outflows
         </Typography>
         {usageStats ? (
-          <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="" />
+          <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="inflows" />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
         )}

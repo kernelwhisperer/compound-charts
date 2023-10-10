@@ -3,8 +3,9 @@
 import { Box, Paper, useTheme } from "@mui/material"
 import { createChart, CrosshairMode, IChartApi } from "lightweight-charts"
 import React, { memo, MutableRefObject, useEffect, useRef } from "react"
-import { formatNumber } from "../utils/utils"
+import { formatNumber, formatTime, getCrosshairDataPoint } from "../utils/utils"
 import { RobotoMonoFF } from "../theme"
+import { $dataPoint } from "../stores/app"
 
 // import { $timeframe } from "../stores/metric-page"
 // import { createPriceFormatter } from "../utils/chart"
@@ -44,10 +45,12 @@ export function Chart(props: ChartProps) {
       crosshair: {
         horzLine: {
           labelBackgroundColor: primaryColor,
+          color: primaryColor,
         },
         mode: CrosshairMode.Normal,
         vertLine: {
           labelBackgroundColor: primaryColor,
+          color: primaryColor,
         },
       },
       grid: {
@@ -90,27 +93,34 @@ export function Chart(props: ChartProps) {
     window.addEventListener("resize", handleResize)
 
     const mainSeries = chartRef.current?.addHistogramSeries({
+      // color: '#ffffffb3',
       color: secondaryColor,
       // lineType: 2,
+      priceLineVisible: false,
+      // lastValueVisible: false
     })
 
     mainSeries.setData(data)
 
-    chartRef.current.subscribeCrosshairMove((param: any) => {
-      let timeFormatted: any = ""
-      let priceFormatted = ""
+    $dataPoint.subscribe((dataPoint: any) => {
+      if (dataPoint) {
+        const { value } = mainSeries.dataByIndex(dataPoint.logical) as any
+        ;(legendRef.current as HTMLDivElement).innerHTML = `${formatTime(
+          (dataPoint.time as number) * 1000
+        )} · <strong>${value.toFixed(significantDigits)} ${unitLabel}</strong>`
+      } else {
+        ;(legendRef.current as HTMLDivElement).innerHTML = ""
+      }
+    })
+
+    chartRef.current.subscribeCrosshairMove((param) => {
+      $dataPoint.set(getCrosshairDataPoint(mainSeries, param))
+
       if (param.time) {
-        const data: any = param.seriesData.get(mainSeries)
-        const price = data.value !== undefined ? data.value : data.close
-        priceFormatted = price.toFixed(significantDigits)
-        timeFormatted = new Intl.DateTimeFormat(window.navigator.language, {
-          dateStyle: "long",
-          hourCycle: "h23",
-          timeStyle: "short",
-        }).format(param.time * 1000)
-        ;(
-          legendRef.current as HTMLDivElement
-        ).innerHTML = `${timeFormatted} · <strong>${priceFormatted}</strong>`
+        const { value } = param.seriesData.get(mainSeries) as any
+        ;(legendRef.current as HTMLDivElement).innerHTML = `${formatTime(
+          (param.time as number) * 1000
+        )} · <strong>${value.toFixed(significantDigits)} ${unitLabel}</strong>`
       } else {
         ;(legendRef.current as HTMLDivElement).innerHTML = ""
       }
@@ -135,16 +145,20 @@ export function Chart(props: ChartProps) {
       }}
       ref={containerRef}
     >
-      <div
+      <Box
         ref={legendRef}
-        style={{
+        sx={{
+          paddingLeft: 1,
+          paddingRight: 1,
           background: "var(--mui-palette-background-default)",
           position: "absolute",
           top: 8,
-          left: 8,
           zIndex: 2,
           fontSize: 13,
           fontFamily: RobotoMonoFF,
+          "&> strong" :{
+            color: theme.palette.secondary.main
+          }
         }}
       />
     </Paper>
