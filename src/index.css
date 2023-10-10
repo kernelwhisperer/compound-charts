@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto+Serif:opsz,wght@8..144,500&family=Roboto:wght@300;400;500;700&display=block');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto+Serif:opsz,wght@8..144,500&family=Roboto:wght@300;400;500;700&display=block");
 
 #dot-grid {
   display: block;
@@ -18,9 +18,9 @@
 .st1 {
   fill-rule: evenodd;
   clip-rule: evenodd;
-  fill: #00D395;
+  fill: #00d395;
   fill-opacity: 1;
-  stroke: #00D395;
+  stroke: #00d395;
   stroke-width: 28px;
 }
 
@@ -50,9 +50,9 @@
 }
 
 .loading-indicator-active path {
-  animation: loadingLogoAnim 2.5s infinite
+  animation: loadingLogoAnim 2.5s infinite;
 }
 
 .loading-indicator-inactive path {
-  animation: loadingLogoAnim 2.5s
+  animation: loadingLogoAnim 2.5s;
 }

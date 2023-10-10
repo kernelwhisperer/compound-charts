@@ -5,12 +5,13 @@ import { CssBaseline, Experimental_CssVarsProvider as CssVarsProvider } from "@m
 import theme from "./theme"
 import App from "./App"
 import "./index.css"
+import { BrowserRouter } from "react-router-dom"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <BrowserRouter future={{ v7_startTransition: true }}>
     <CssVarsProvider defaultMode="dark" theme={theme}>
       <CssBaseline />
       <App />
     </CssVarsProvider>
-  </React.StrictMode>
+  </BrowserRouter>
 )

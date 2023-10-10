@@ -11,14 +11,13 @@ import { RobotoMonoFF, RobotoSerifFF } from "../theme"
 import { RadialPercentage } from "../components/RadialPercentage"
 import { $loading } from "../stores/app"
 import { Link, NavLink, useParams } from "react-router-dom"
-import { $marketMap } from "../stores/markets"
+import { $marketMap, getMarketById } from "../stores/markets"
 import { useStore } from "@nanostores/react"
 import { AnimatedList } from "../components/AnimatedList"
 
-export function MarketPage() {
+export function MarketPage({show}: any) {
   const { marketId } = useParams()
-  const marketMap = useStore($marketMap)
-  const market = marketId ? marketMap[marketId] : undefined
+  const market = useStore(getMarketById(marketId))
 
   console.log(market)
 
@@ -33,7 +32,7 @@ export function MarketPage() {
   }, [marketId, market])
 
   return (
-    <AnimatedList gap={2} justifyContent="flex-start" alignItems="flex-start">
+    <AnimatedList gap={2} justifyContent="flex-start" alignItems="flex-start" show={show}>
       <Button
         component={Link}
         to="/"
@@ -48,7 +47,7 @@ export function MarketPage() {
         }}
         startIcon={<KeyboardBackspace />}
       >
-        Homepage
+        Markets
       </Button>
       {market && (
         <Stack gap={2} direction="row" alignItems="flex-start">
