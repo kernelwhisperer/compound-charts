@@ -9,19 +9,12 @@ import { MarketPage } from "./pages/MarketPage"
 import { AnimatedList } from "./components/AnimatedList"
 import { useTransition, a } from "@react-spring/web"
 
-const SHOW_STATE = { opacity: 1, x: 0, pointerEvents: "unset" }
-const HIDE_STATE = { opacity: 0, x: -60, pointerEvents: "none" }
-
 export default function App() {
   const location = useLocation()
-  console.log("📜 LOG > App > location:", location)
 
   const transitions = useTransition(location, {
     config: { friction: 200, mass: 5, tension: 2000 },
     keys: (location) => location.pathname,
-    from: SHOW_STATE,
-    enter: SHOW_STATE,
-    leave: HIDE_STATE,
     exitBeforeEnter: true,
     immediate: true,
     delay: 250,
@@ -42,7 +35,7 @@ export default function App() {
           </Typography>
         </>
         {transitions((styles, item) => (
-          <a.div style={{ ...styles, position: "absolute", maxWidth: 1200 } as any}>
+          <a.div style={{ ...styles, position: "absolute", maxWidth: 1200, width: "calc(100% - 48px)" } as any}>
             <Routes location={item}>
               <Route path="/" element={<HomePage show={location.pathname === "/"} />} />
               <Route path="/:marketId" element={<MarketPage show={location.pathname !== "/"} />} />

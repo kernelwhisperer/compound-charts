@@ -17,6 +17,7 @@
     "@mui/material": "latest",
     "@nanostores/react": "^0.7.1",
     "@react-spring/web": "^9.7.3",
+    "lightweight-charts": "^4.1.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "nanostores": "^0.9.3",

@@ -11,22 +11,9 @@ export default async function query(marketId: string) {
   const graphQuery = gql`
     {
       market(id: "${marketId}") {
-        configuration {
-          id
-          name
-          symbol
-          baseToken {
-            id
-            token {
-              name
-              symbol
-              id
-              decimals
-            }
-          }
-        }
-        creationBlockNumber
-        dailyUsage {
+        dailyUsage(first: 1000, orderBy: timestamp, orderDirection: asc) {
+          timestamp
+          day
           usage {
              uniqueUsersCount
           }
@@ -41,5 +28,12 @@ export default async function query(marketId: string) {
     throw new Error(errorMessage)
   }
 
-  return response.data.market
+  const { market } = response.data
+
+  market.dailyUsage = market.dailyUsage.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: parseInt(x.usage.uniqueUsersCount),
+  }))
+
+  return market
 }

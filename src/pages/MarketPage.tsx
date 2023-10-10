@@ -4,35 +4,51 @@ import React, { useEffect, useState } from "react"
 import Container from "@mui/material/Container"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
-import { Avatar, AvatarGroup, Badge, Card, Paper, Skeleton, Stack, Tooltip } from "@mui/material"
-import query from "../api/market"
+import { Avatar, AvatarGroup, Badge, Card, Paper, Skeleton, Stack } from "@mui/material"
 import { formatNumber, wait } from "../utils/utils"
 import { RobotoMonoFF, RobotoSerifFF } from "../theme"
 import { RadialPercentage } from "../components/RadialPercentage"
 import { $loading } from "../stores/app"
 import { Link, NavLink, useParams } from "react-router-dom"
-import { $marketMap, getMarketById } from "../stores/markets"
+import { $markets, getMarketById } from "../stores/markets"
 import { useStore } from "@nanostores/react"
 import { AnimatedList } from "../components/AnimatedList"
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Chart } from "../components/Chart"
+import queryMarkets from "../api/markets"
+import queryDailyUsage from "../api/daily-usage"
 
-export function MarketPage({show}: any) {
+export function MarketPage({ show }: any) {
   const { marketId } = useParams()
   const market = useStore(getMarketById(marketId))
+
+  const [usageStats, setUsageStats] = useState<any>()
+  console.log("📜 LOG > MarketPage > usageStats:", usageStats)
 
   console.log(market)
 
   useEffect(() => {
-    if (!marketId || market) return
+    if ($markets.get().length) return
 
     $loading.set(true)
-    Promise.all([query(marketId), wait(1_000)]).then(([market]) => {
-      $marketMap.setKey(marketId, market)
+    Promise.all([queryMarkets(), wait(1_000)]).then(([markets]) => {
+      $markets.set(markets)
       $loading.set(false)
     })
-  }, [marketId, market])
+  }, [])
+
+  useEffect(() => {
+    if (!market || !marketId) return
+
+    $loading.set(true)
+    Promise.all([queryDailyUsage(marketId), wait(1_000)]).then(([usage]) => {
+      setUsageStats(usage)
+      $loading.set(false)
+    })
+  }, [market])
 
   return (
-    <AnimatedList gap={2} justifyContent="flex-start" alignItems="flex-start" show={show}>
+    <AnimatedList gap={2} show={show}>
       <Button
         component={Link}
         to="/"
@@ -79,6 +95,39 @@ export function MarketPage({show}: any) {
             </Typography>
           </Stack>
         </Stack>
+      )}
+      {!market && [<Skeleton key={0} variant="rounded" height={54} width={300} />]}
+      {/* {market && (
+        <ResponsiveContainer minWidth={400} width={"100%"} height={400}>
+          <BarChart data={market.dailyUsage}>
+            <Bar dataKey="usage.uniqueUsersCount" fill="#8884d8" />
+            <XAxis
+              scale="time"
+              type="number"
+              dataKey="timestamp"
+              domain={['dataMin', 'dataMax']}
+              // axisLine={false}
+              // tickLine={false}
+              // interval={0}
+              // // tick={renderQuarterTick}
+              // height={1}
+              // scale="band"
+              // xAxisId="quarter"
+            
+            />
+            <YAxis orientation="right" domain={[0, 'dataMax + 20']}/>
+            <Tooltip />
+          </BarChart>
+        </ResponsiveContainer>
+      )} */}
+
+      <Typography variant="h6" fontFamily={RobotoSerifFF}>
+        Daily unique users
+      </Typography>
+      {usageStats ? (
+        <Chart data={usageStats.dailyUsage} significantDigits={0} unitLabel="" />
+      ) : (
+        <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
       )}
     </AnimatedList>
   )
