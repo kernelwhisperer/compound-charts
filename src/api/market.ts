@@ -7,10 +7,10 @@ const client = createClient({
   url: API_URL,
 })
 
-export default async function query() {
+export default async function query(marketId: string) {
   const graphQuery = gql`
     {
-      markets {
+      market(id: "${marketId}") {
         configuration {
           id
           name
@@ -26,13 +26,10 @@ export default async function query() {
           }
         }
         creationBlockNumber
-        accounting {
-          collateralBalanceUsd
-          totalBaseBorrow
-          totalBaseBorrowUsd
-          totalBaseSupply
-          totalBaseSupplyUsd
-          utilization
+        dailyUsage {
+          usage {
+             uniqueUsersCount
+          }
         }
       }
     }
@@ -44,5 +41,5 @@ export default async function query() {
     throw new Error(errorMessage)
   }
 
-  return response.data.markets
+  return response.data.market
 }

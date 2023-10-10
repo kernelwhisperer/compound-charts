@@ -4,6 +4,9 @@ import Typography from "@mui/material/Typography"
 import { HomePage } from "./pages/HomePage"
 import { CompoundLogo } from "./components/CompoundLogo"
 import { Stack } from "@mui/material"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { MarketPage } from "./pages/MarketPage"
+import { AnimatedList } from "./components/AnimatedList"
 
 export default function App() {
   return (
@@ -11,12 +14,8 @@ export default function App() {
       <div id="dot-grid" />
       <Container maxWidth="lg" sx={{ paddingTop: 4 }}>
         <>
-          <Typography
-            variant="h2"
-            fontFamily="'Roboto Serif', serif"
-            sx={{ paddingBottom: 6 }}
-          >
-            <Stack direction="row" justifyContent={"center"} gap={1} flexWrap={"wrap"}>
+          <Typography variant="h2" fontFamily="'Roboto Serif', serif" sx={{ paddingBottom: 6 }}>
+            <Stack direction="row" gap={1} flexWrap={"wrap"}>
               <CompoundLogo />
               <span>Compound</span>
               <span>×</span>
@@ -24,7 +23,12 @@ export default function App() {
             </Stack>
           </Typography>
         </>
-        <HomePage />
+        <BrowserRouter future={{ v7_startTransition: true }}>
+          <Routes>
+            <Route path="/" Component={HomePage} />
+            <Route path="/:marketId" Component={MarketPage}  />
+          </Routes>
+        </BrowserRouter>
       </Container>
     </>
   )

@@ -20,6 +20,10 @@ export function RadialPercentage({ percentage }: any) {
           fill="rgba(138, 141, 149, 0.8)"
           labelLine={false}
           stroke="rgba(38, 41, 49, 1)"
+          rootTabIndex={-1}
+          animationDuration={300}
+          animationEasing="ease-in-out"
+          animationBegin={200}
         >
           <Cell key="Percentage" fill="#00D395" />
         </Pie>
