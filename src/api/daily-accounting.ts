@@ -11,13 +11,12 @@ export default async function query(marketId: string) {
   const graphQuery = gql`
     {
       market(id: "${marketId}") {
-        dailyUsage(first: 1000, orderBy: timestamp, orderDirection: asc) {
+        dailyMarketAccounting(first: 1000, orderBy: timestamp, orderDirection: asc) {
           timestamp
-          usage {
-             uniqueUsersCount
-             transactionCount
-             supplyBaseCount
-             withdrawBaseCount
+          accounting {
+            totalBaseSupplyUsd
+            totalBaseBorrowUsd
+            collateralBalanceUsd
           }
         }
       }
@@ -32,24 +31,19 @@ export default async function query(marketId: string) {
 
   const { market } = response.data
 
-  market.txns = market.dailyUsage.map((x: any) => ({
+  market.supply = market.dailyMarketAccounting.map((x: any) => ({
     time: parseInt(x.timestamp),
-    value: parseInt(x.usage.transactionCount),
+    value: parseInt(x.accounting.totalBaseSupplyUsd),
   }))
 
-  market.uniqueUsers = market.dailyUsage.map((x: any) => ({
+  market.borrow = market.dailyMarketAccounting.map((x: any) => ({
     time: parseInt(x.timestamp),
-    value: parseInt(x.usage.uniqueUsersCount),
+    value: parseInt(x.accounting.totalBaseBorrowUsd),
   }))
 
-  market.inflows = market.dailyUsage.map((x: any) => ({
+  market.collateral = market.dailyMarketAccounting.map((x: any) => ({
     time: parseInt(x.timestamp),
-    value: parseInt(x.usage.supplyBaseCount),
-  }))
-
-  market.outflows = market.dailyUsage.map((x: any) => ({
-    time: parseInt(x.timestamp),
-    value: parseInt(x.usage.withdrawBaseCount) * -1,
+    value: parseInt(x.accounting.collateralBalanceUsd),
   }))
 
   return market

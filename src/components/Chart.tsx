@@ -124,12 +124,16 @@ export function Chart(props: ChartProps) {
         if (secondData) {
           const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
           value += secondValue
-          if(value === 0 ) style = '"color: #fff;"'
-          if(value < 0 ) style = '"color: #8f66ff;"'
+          if (value === 0) style = '"color: #fff;"'
+          if (value < 0) style = '"color: #8f66ff;"'
         }
 
-        let label = `${formatTime((dataPoint.time as number) * 1000)} · <strong style=${style}>${value.toFixed(
-          significantDigits
+        let label = `${formatTime(
+          (dataPoint.time as number) * 1000
+        )} · <strong style=${style}>${formatNumber(
+          value,
+          significantDigits,
+          compact ? "compact" : undefined
         )} ${unitLabel}</strong>`
 
         if (legendRef.current) legendRef.current.innerHTML = label
@@ -148,12 +152,16 @@ export function Chart(props: ChartProps) {
         if (secondData) {
           const { value: secondValue } = param.seriesData.get(secondSeries) as any
           value += secondValue
-          if(value === 0 ) style = '"color: #fff;"'
-          if(value < 0 ) style = '"color: #8f66ff;"'
+          if (value === 0) style = '"color: #fff;"'
+          if (value < 0) style = '"color: #8f66ff;"'
         }
 
-        let label = `${formatTime((param.time as number) * 1000)} · <strong style=${style}>${value.toFixed(
-          significantDigits
+        let label = `${formatTime(
+          (param.time as number) * 1000
+        )} · <strong style=${style}>${formatNumber(
+          value,
+          significantDigits,
+          compact ? "compact" : undefined
         )} ${unitLabel}</strong>`
 
         if (legendRef.current) legendRef.current.innerHTML = label

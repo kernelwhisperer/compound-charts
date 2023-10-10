@@ -28,9 +28,7 @@ export function AnimatedList({ children, show = true, ...rest }: any) {
   const items = Children.toArray(children)
 
   const trails = useTrail(items.length, {
-    config: show
-      ? { friction: 120, mass: 5, tension: 2000 }
-      : { friction: 120, mass: 5, tension: 2000 },
+    config: { friction: 120, mass: 5, tension: 2000 },
     from: show ? INIT_STATE : HIDE_STATE,
     reverse: !show,
     to: SHOW_STATE,

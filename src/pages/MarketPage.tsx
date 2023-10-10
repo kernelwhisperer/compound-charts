@@ -1,5 +1,5 @@
 import { KeyboardBackspace } from "@mui/icons-material"
-import { Button } from "@mui/material"
+import { Button, Tab, Tabs, tabsClasses } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import Container from "@mui/material/Container"
 import Typography from "@mui/material/Typography"
@@ -13,19 +13,16 @@ import { Link, NavLink, useParams } from "react-router-dom"
 import { $markets, getMarketById } from "../stores/markets"
 import { useStore } from "@nanostores/react"
 import { AnimatedList } from "../components/AnimatedList"
-import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Chart } from "../components/Chart"
 import queryMarkets from "../api/markets"
 import queryDailyUsage from "../api/daily-usage"
+import { UsagePage } from "./UsagePage"
+import { AccountingPage } from "./AccountingPage"
+import { a, useTransition } from "@react-spring/web"
 
 export function MarketPage({ show }: any) {
   const { marketId } = useParams()
   const market = useStore(getMarketById(marketId))
-
-  const [usageStats, setUsageStats] = useState<any>()
-  console.log("📜 LOG > MarketPage > usageStats:", usageStats)
-
-  console.log(market)
 
   useEffect(() => {
     if ($markets.get().length) return
@@ -37,18 +34,23 @@ export function MarketPage({ show }: any) {
     })
   }, [])
 
-  useEffect(() => {
-    if (!market || !marketId) return
+  const [tabIndex, setTabIndex] = useState(1)
 
-    $loading.set(true)
-    Promise.all([queryDailyUsage(marketId), wait(1_000)]).then(([usage]) => {
-      setUsageStats(usage)
-      $loading.set(false)
-    })
-  }, [market])
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabIndex(newValue)
+  }
+
+  const transitions = useTransition(tabIndex, {
+    exitBeforeEnter: true,
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    immediate: true,
+    delay: 250,
+  })
 
   return (
-    <AnimatedList gap={2} show={show}>
+    <AnimatedList gap={4} show={show}>
       <Button
         component={Link}
         to="/"
@@ -66,84 +68,68 @@ export function MarketPage({ show }: any) {
         Markets
       </Button>
       {market && (
-        <Stack gap={2} direction="row" alignItems="flex-start">
-          <Badge
-            overlap="circular"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            badgeContent={
+        <Stack gap={2} direction="row" justifyContent="space-between" alignItems={"flex-start"}>
+          <Stack gap={2} direction="row" alignItems="flex-start">
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              badgeContent={
+                <Avatar
+                  sx={{
+                    width: 28,
+                    height: 28,
+                    border: "2px solid var(--mui-palette-background-default)",
+                  }}
+                  src={`https://app.compound.finance/images/assets/asset_ETHEREUM.svg`}
+                />
+              }
+            >
               <Avatar
-                sx={{
-                  width: 28,
-                  height: 28,
-                  border: "2px solid var(--mui-palette-background-default)",
-                }}
-                src={`https://app.compound.finance/images/assets/asset_ETHEREUM.svg`}
+                sx={{ width: 48, height: 48 }}
+                src={`https://app.compound.finance/images/assets/asset_${market.configuration.baseToken.token.symbol}.svg`}
               />
-            }
-          >
-            <Avatar
-              sx={{ width: 48, height: 48 }}
-              src={`https://app.compound.finance/images/assets/asset_${market.configuration.baseToken.token.symbol}.svg`}
-            />
-          </Badge>
-          <Stack>
-            <Typography variant="h5" fontFamily={RobotoSerifFF}>
-              {market.configuration.baseToken.token.name}
-            </Typography>
-            <Typography color="text.secondary" variant="subtitle2" fontFamily={RobotoSerifFF}>
-              Ethereum
-            </Typography>
+            </Badge>
+            <Stack>
+              <Typography variant="h5" fontFamily={RobotoSerifFF}>
+                {market.configuration.baseToken.token.name}
+              </Typography>
+              <Typography color="text.secondary" variant="subtitle2" fontFamily={RobotoSerifFF}>
+                Ethereum
+              </Typography>
+            </Stack>
           </Stack>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            sx={{
+              background: "var(--mui-palette-background-paper)",
+              borderRadius: 2,
+              padding: 1,
+              [`& .${tabsClasses.indicator}`]: {
+                borderRadius: 1,
+                height: "100%",
+                background: "var(--mui-palette-background-default)",
+              },
+              [`& .${tabsClasses.flexContainer} > button`]: {
+                zIndex: 2,
+                textTransform: "none !important",
+                minHeight: 38,
+              },
+            }}
+          >
+            <Tab label="Usage" disableRipple />
+            <Tab label="Accounting" disableRipple />
+          </Tabs>
         </Stack>
       )}
-      {!market && <Skeleton variant="rounded" height={54} width={300} />}
-      <AnimatedList
-        gap={4}
-        direction="row"
-        flexWrap="wrap"
-        show={show}
-        sx={{
-          "& > *": {
-            flex: 1,
-          },
-        }}
-      >
-        <div>
-          <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-            Transactions
-          </Typography>
-          {usageStats ? (
-            <Chart data={usageStats.txns} significantDigits={0} unitLabel="txns" />
-          ) : (
-            <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-          )}
-        </div>
-        <div>
-          <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-            Daily unique users
-          </Typography>
-          {usageStats ? (
-            <Chart data={usageStats.uniqueUsers} significantDigits={0} unitLabel="users" />
-          ) : (
-            <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-          )}
-        </div>
-      </AnimatedList>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Inflows and outflows
-        </Typography>
-        {usageStats ? (
-          <Chart
-            data={usageStats.inflows}
-            secondData={usageStats.outflows}
-            significantDigits={0}
-            unitLabel="inflows"
-          />
+      {!market && <Skeleton variant="rounded" height={57.5} width={300} />}
+      {transitions((_styles, item) =>
+        item === 0 ? (
+          <UsagePage key={"usage"} show={tabIndex === 0} />
         ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
+          <AccountingPage key={"accounting"} show={tabIndex === 1} />
+        )
+      )}
     </AnimatedList>
   )
 }

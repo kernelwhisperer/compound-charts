@@ -5,17 +5,19 @@ import { HomePage } from "./pages/HomePage"
 import { CompoundLogo } from "./components/CompoundLogo"
 import { Stack } from "@mui/material"
 import { Route, Routes, useLocation } from "react-router-dom"
-import { MarketPage } from "./pages/MarketPage"
 import { AnimatedList } from "./components/AnimatedList"
 import { useTransition, a } from "@react-spring/web"
+import { MarketPage } from "./pages/MarketPage"
 
 export default function App() {
   const location = useLocation()
 
   const transitions = useTransition(location, {
-    config: { friction: 200, mass: 5, tension: 2000 },
     keys: (location) => location.pathname,
     exitBeforeEnter: true,
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
     immediate: true,
     delay: 250,
   })
@@ -35,7 +37,11 @@ export default function App() {
           </Typography>
         </>
         {transitions((styles, item) => (
-          <a.div style={{ ...styles, position: "absolute", maxWidth: 1200, width: "calc(100% - 48px)" } as any}>
+          <a.div
+            style={
+              { ...styles, position: "absolute", maxWidth: 1200, width: "calc(100% - 48px)" } as any
+            }
+          >
             <Routes location={item}>
               <Route path="/" element={<HomePage show={location.pathname === "/"} />} />
               <Route path="/:marketId" element={<MarketPage show={location.pathname !== "/"} />} />
