@@ -35,38 +35,26 @@ export function UsagePage({ show }: any) {
 
   return (
     <AnimatedList gap={2} show={show}>
-      <AnimatedList
-        gap={4}
-        direction="row"
-        flexWrap="wrap"
-        show={show}
-        sx={{
-          "& > *": {
-            flex: 1,
-          },
-        }}
-      >
-        <div>
-          <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-            Transactions
-          </Typography>
-          {stats ? (
-            <Chart data={stats.txns} significantDigits={0} unitLabel="txns" />
-          ) : (
-            <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-          )}
-        </div>
-        <div>
-          <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-            Daily unique users
-          </Typography>
-          {stats ? (
-            <Chart data={stats.uniqueUsers} significantDigits={0} unitLabel="users" />
-          ) : (
-            <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-          )}
-        </div>
-      </AnimatedList>
+      <div>
+        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+          Transactions
+        </Typography>
+        {stats ? (
+          <Chart data={stats.txns} significantDigits={0} unitLabel="txns" />
+        ) : (
+          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+        )}
+      </div>
+      <div>
+        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+          Daily unique users
+        </Typography>
+        {stats ? (
+          <Chart data={stats.uniqueUsers} significantDigits={0} unitLabel="users" />
+        ) : (
+          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+        )}
+      </div>
       <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
           Inflows and outflows

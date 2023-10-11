@@ -116,7 +116,10 @@ export function Chart(props: ChartProps) {
       secondSeries.setData(secondData)
     }
 
+    const chartId = Math.random() 
+
     $dataPoint.subscribe((dataPoint: any) => {
+      if(dataPoint?.chartId === chartId) return
       if (dataPoint) {
         let { value } = mainSeries.dataByIndex(dataPoint.logical) as any
         let style = ""
@@ -137,13 +140,18 @@ export function Chart(props: ChartProps) {
         )} ${unitLabel}</strong>`
 
         if (legendRef.current) legendRef.current.innerHTML = label
+
+        if (dataPoint) {
+          chartRef.current?.setCrosshairPosition(undefined as any, dataPoint.time, mainSeries);
+        }
       } else {
         if (legendRef.current) legendRef.current.innerHTML = ""
+        chartRef.current?.clearCrosshairPosition();
       }
     })
 
     chartRef.current.subscribeCrosshairMove((param) => {
-      $dataPoint.set(getCrosshairDataPoint(mainSeries, param))
+      $dataPoint.set(getCrosshairDataPoint(mainSeries, param, chartId))
 
       if (param.time) {
         let { value } = param.seriesData.get(mainSeries) as any

@@ -16,12 +16,13 @@ export async function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export function getCrosshairDataPoint(series, param) {
+export function getCrosshairDataPoint(series, param, chartId) {
   if (!param.time) {
     return null;
   }
   const dataPoint = param.seriesData.get(series);
   dataPoint.logical = param.logical
+  dataPoint.chartId = chartId
   return dataPoint || null;
 }
 

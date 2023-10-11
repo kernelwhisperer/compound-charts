@@ -39,7 +39,7 @@ export default function App() {
         {transitions((styles, item) => (
           <a.div
             style={
-              { ...styles, position: "absolute", maxWidth: 1200, width: "calc(100% - 48px)" } as any
+              { ...styles, position: "absolute", maxWidth: 1200, width: "calc(100% - 48px)", paddingBottom: 16 } as any
             }
           >
             <Routes location={item}>
