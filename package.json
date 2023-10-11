@@ -1,6 +1,7 @@
 {
   "name": "material-ui-vite-ts",
   "private": true,
+  "license": "UNLICENSED",
   "version": "5.0.0",
   "type": "module",
   "scripts": {

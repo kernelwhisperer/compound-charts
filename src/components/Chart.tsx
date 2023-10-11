@@ -5,7 +5,7 @@ import { createChart, CrosshairMode, IChartApi } from "lightweight-charts"
 import React, { memo, MutableRefObject, useEffect, useRef } from "react"
 import { formatNumber, formatTime, getCrosshairDataPoint } from "../utils/utils"
 import { RobotoMonoFF } from "../theme"
-import { $dataPoint } from "../stores/app"
+import { $dataPoint, $timeRange } from "../stores/app"
 
 // import { $timeframe } from "../stores/metric-page"
 // import { createPriceFormatter } from "../utils/chart"
@@ -116,10 +116,10 @@ export function Chart(props: ChartProps) {
       secondSeries.setData(secondData)
     }
 
-    const chartId = Math.random() 
+    const chartId = Math.random()
 
-    $dataPoint.subscribe((dataPoint: any) => {
-      if(dataPoint?.chartId === chartId) return
+    const unsub1 = $dataPoint.subscribe((dataPoint: any) => {
+      if (dataPoint?.chartId === chartId) return
       if (dataPoint) {
         let { value } = mainSeries.dataByIndex(dataPoint.logical) as any
         let style = ""
@@ -142,11 +142,11 @@ export function Chart(props: ChartProps) {
         if (legendRef.current) legendRef.current.innerHTML = label
 
         if (dataPoint) {
-          chartRef.current?.setCrosshairPosition(undefined as any, dataPoint.time, mainSeries);
+          chartRef.current?.setCrosshairPosition(undefined as any, dataPoint.time, mainSeries)
         }
       } else {
         if (legendRef.current) legendRef.current.innerHTML = ""
-        chartRef.current?.clearCrosshairPosition();
+        chartRef.current?.clearCrosshairPosition()
       }
     })
 
@@ -178,8 +178,24 @@ export function Chart(props: ChartProps) {
       }
     })
 
+    chartRef.current.timeScale().subscribeVisibleLogicalRangeChange((timeRange) => {
+      if (!timeRange) return
+
+      const current = $timeRange.get()
+      if (current && timeRange.from === current.from && timeRange.to && current.to) return
+
+      $timeRange.set({ chartId, timeRange })
+    })
+
+    const unsub2 = $timeRange.subscribe((newValue: any) => {
+      if (!newValue || newValue.chartId === chartId) return
+      chartRef.current?.timeScale().setVisibleLogicalRange(newValue.timeRange)
+    })
+
     return function cleanup() {
       window.removeEventListener("resize", handleResize)
+      unsub1()
+      unsub2()
 
       chartRef.current?.remove()
     }
