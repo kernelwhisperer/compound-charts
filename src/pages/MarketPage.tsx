@@ -120,7 +120,7 @@ export function MarketPage({ show }: any) {
           </Tabs>
         </Stack>
       )}
-      {!market && <Skeleton variant="rounded" height={57.5} width={300} />}
+      {!market && <Skeleton variant="rounded" height={54} width={300} />}
       {transitions((_styles, item) =>
         item === 0 ? (
           <UsagePage key={"usage"} show={tabIndex === 0} />
