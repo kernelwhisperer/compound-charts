@@ -34,7 +34,7 @@ export function MarketPage({ show }: any) {
     })
   }, [])
 
-  const [tabIndex, setTabIndex] = useState(1)
+  const [tabIndex, setTabIndex] = useState(0)
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
