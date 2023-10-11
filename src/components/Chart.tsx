@@ -18,10 +18,22 @@ export type ChartProps = {
   unitLabel?: string
   data: any[]
   secondData?: any[]
+  diffMode?: boolean
+  dataLabel?: string
+  secondDataLabel?: string
 }
 
 export function Chart(props: ChartProps) {
-  const { data, secondData, significantDigits = 2, compact = false, unitLabel = "" } = props
+  const {
+    data,
+    secondData,
+    significantDigits = 2,
+    diffMode = false,
+    compact = false,
+    unitLabel = "",
+    dataLabel = "",
+    secondDataLabel = "",
+  } = props
 
   const theme = useTheme()
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -124,7 +136,7 @@ export function Chart(props: ChartProps) {
         let { value } = mainSeries.dataByIndex(dataPoint.logical) as any
         let style = ""
 
-        if (secondData) {
+        if (secondData && diffMode) {
           const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
           value += secondValue
           if (value === 0) style = '"color: #fff;"'
@@ -133,11 +145,20 @@ export function Chart(props: ChartProps) {
 
         let label = `${formatTime(
           (dataPoint.time as number) * 1000
-        )} · <strong style=${style}>${formatNumber(
+        )} · ${dataLabel} <strong style=${style}>${formatNumber(
           value,
           significantDigits,
           compact ? "compact" : undefined
         )} ${unitLabel}</strong>`
+
+        if (secondData && !diffMode) {
+          const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
+          label += ` · ${secondDataLabel} <strong style="color: #8f66ff;">${formatNumber(
+            secondValue,
+            significantDigits,
+            compact ? "compact" : undefined
+          )} ${unitLabel}</strong>`
+        }
 
         if (legendRef.current) legendRef.current.innerHTML = label
 
@@ -157,7 +178,7 @@ export function Chart(props: ChartProps) {
         let { value } = param.seriesData.get(mainSeries) as any
         let style = ""
 
-        if (secondData) {
+        if (secondData && diffMode) {
           const { value: secondValue } = param.seriesData.get(secondSeries) as any
           value += secondValue
           if (value === 0) style = '"color: #fff;"'
@@ -166,11 +187,20 @@ export function Chart(props: ChartProps) {
 
         let label = `${formatTime(
           (param.time as number) * 1000
-        )} · <strong style=${style}>${formatNumber(
+        )} · ${dataLabel} <strong style=${style}>${formatNumber(
           value,
           significantDigits,
           compact ? "compact" : undefined
         )} ${unitLabel}</strong>`
+
+        if (secondData && !diffMode) {
+          const { value: secondValue } = param.seriesData.get(secondSeries) as any
+          label += ` · ${secondDataLabel} <strong style="color: #8f66ff;">${formatNumber(
+            secondValue,
+            significantDigits,
+            compact ? "compact" : undefined
+          )} ${unitLabel}</strong>`
+        }
 
         if (legendRef.current) legendRef.current.innerHTML = label
       } else {

@@ -33,7 +33,7 @@ const theme = extendTheme({
     borderRadius: 6
   }
 })
-console.log("📜 LOG > theme:", theme)
+// console.log("📜 LOG > theme:", theme)
 
 export const RobotoSerifFF = "'Roboto Serif', serif"
 export const RobotoMonoFF = "'Roboto Mono', monospace"

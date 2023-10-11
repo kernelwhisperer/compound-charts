@@ -62,6 +62,7 @@ export function UsagePage({ show }: any) {
         </Typography>
         {stats ? (
           <Chart
+          diffMode
             data={stats.inflows}
             secondData={stats.outflows}
             significantDigits={0}

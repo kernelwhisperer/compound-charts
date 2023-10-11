@@ -47,6 +47,8 @@ export function AccountingPage({ show }: any) {
             significantDigits={2}
             compact
             unitLabel="USD"
+            dataLabel="Supplied"
+            secondDataLabel="Borrowed"
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
@@ -63,6 +65,8 @@ export function AccountingPage({ show }: any) {
             significantDigits={2}
             compact
             unitLabel="USD"
+            dataLabel="Collateral"
+            secondDataLabel="Borrowed"
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
