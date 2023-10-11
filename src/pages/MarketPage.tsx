@@ -27,10 +27,8 @@ export function MarketPage({ show }: any) {
   useEffect(() => {
     if ($markets.get().length) return
 
-    $loading.set(true)
     Promise.all([queryMarkets(), wait(1_000)]).then(([markets]) => {
       $markets.set(markets)
-      $loading.set(false)
     })
   }, [])
 
@@ -103,12 +101,12 @@ export function MarketPage({ show }: any) {
             onChange={handleTabChange}
             sx={{
               background: "var(--mui-palette-background-paper)",
-              borderRadius: 2,
-              padding: 1,
+              borderRadius: 5,
+              padding: 0.75,
               [`& .${tabsClasses.indicator}`]: {
-                borderRadius: 1,
+              borderRadius: 5,
                 height: "100%",
-                background: "var(--mui-palette-background-default)",
+                background: "#8f66ff80",
               },
               [`& .${tabsClasses.flexContainer} > button`]: {
                 zIndex: 2,

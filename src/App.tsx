@@ -40,6 +40,7 @@ export default function App() {
             <Link target="_blank" href="mailto:hello@danielconstantin.net">
               hello@danielconstantin.net
             </Link>{" "}
+            (open to work)
             for{" "}
             <Link target="_blank" href="https://ethglobal.com/events/ethonline2023">
               EthGlobal 2023
