@@ -8,7 +8,7 @@ import { Avatar, AvatarGroup, Badge, Card, Paper, Skeleton, Stack } from "@mui/m
 import { formatNumber, wait } from "../utils/utils"
 import { RobotoMonoFF, RobotoSerifFF } from "../theme"
 import { RadialPercentage } from "../components/RadialPercentage"
-import { $loading } from "../stores/app"
+import { $loading, $timeRange } from "../stores/app"
 import { Link, NavLink, useParams } from "react-router-dom"
 import { $markets, getMarketById } from "../stores/markets"
 import { useStore } from "@nanostores/react"
@@ -27,6 +27,7 @@ export function UsagePage({ show }: any) {
     if (!market || !marketId) return
 
     $loading.set(true)
+    $timeRange.set(undefined)
     Promise.all([queryDailyUsage(marketId), wait(1_000)]).then(([usage]) => {
       setStats(usage)
       $loading.set(false)
