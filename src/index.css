@@ -56,3 +56,40 @@
 .loading-indicator-inactive path {
   animation: loadingLogoAnim 2.5s;
 }
+
+::selection {
+  color: white;
+  background: var(--main);
+}
+
+html {
+  scrollbar-width: thin;
+  --main: #00d395;
+  overflow: scroll;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb {
+  height: 8px;
+  border-radius: 2px;
+  width: 8px;
+}
+
+::-webkit-scrollbar {
+  background: rgb(42, 45, 53);
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: #00d39555;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--main);
+  
+}

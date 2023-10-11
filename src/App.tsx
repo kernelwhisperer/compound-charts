@@ -3,7 +3,7 @@ import Container from "@mui/material/Container"
 import Typography from "@mui/material/Typography"
 import { HomePage } from "./pages/HomePage"
 import { CompoundLogo } from "./components/CompoundLogo"
-import { Stack } from "@mui/material"
+import { Link, Stack } from "@mui/material"
 import { Route, Routes, useLocation } from "react-router-dom"
 import { AnimatedList } from "./components/AnimatedList"
 import { useTransition, a } from "@react-spring/web"
@@ -27,7 +27,7 @@ export default function App() {
       <div id="dot-grid" />
       <Container maxWidth="lg" sx={{ paddingTop: 4 }}>
         <>
-          <Typography variant="h2" fontFamily="'Roboto Serif', serif" sx={{ paddingBottom: 6 }}>
+          <Typography variant="h2" fontFamily="'Roboto Serif', serif">
             <Stack direction="row" gap={1} flexWrap={"wrap"}>
               <CompoundLogo />
               <span>Compound</span>
@@ -35,11 +35,27 @@ export default function App() {
               <span>EthGlobal</span>
             </Stack>
           </Typography>
+          <Typography variant="caption" sx={{ marginLeft: 11, marginBottom: 6 }} component="div">
+            Built with ❤️ by{" "}
+            <Link target="_blank" href="mailto:hello@danielconstantin.net">
+              hello@danielconstantin.net
+            </Link>{" "}
+            for{" "}
+            <Link target="_blank" href="https://ethglobal.com/events/ethonline2023">
+              EthGlobal 2023
+            </Link>{" "}
+          </Typography>
         </>
         {transitions((styles, item) => (
           <a.div
             style={
-              { ...styles, position: "absolute", maxWidth: 1200, width: "calc(100% - 48px)", paddingBottom: 16 } as any
+              {
+                ...styles,
+                position: "absolute",
+                maxWidth: 1200,
+                width: "calc(100% - 48px)",
+                paddingBottom: 16,
+              } as any
             }
           >
             <Routes location={item}>
