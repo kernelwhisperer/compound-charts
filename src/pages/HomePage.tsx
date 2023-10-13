@@ -13,6 +13,7 @@ import { $markets } from "../stores/markets"
 import { useStore } from "@nanostores/react"
 import { AnimatedList } from "../components/AnimatedList"
 import { Tooltip } from "../components/Tooltip"
+import { NETWORK_IMAGES, NETWORK_LABELS } from "../api/connections"
 
 export function Statistic({ label, value, tokenSymbol, usdValue }: any) {
   return (
@@ -130,11 +131,11 @@ export function HomePage({ show }: any) {
                         badgeContent={
                           <Avatar
                             sx={{
-                              width: 28,
-                              height: 28,
+                              width: 32,
+                              height: 32,
                               border: "2px solid var(--mui-palette-background-default)",
                             }}
-                            src={`https://app.compound.finance/images/assets/asset_ETHEREUM.svg`}
+                            src={NETWORK_IMAGES[x.networkIndex]}
                           />
                         }
                       >
@@ -152,7 +153,7 @@ export function HomePage({ show }: any) {
                           variant="subtitle2"
                           fontFamily={RobotoSerifFF}
                         >
-                          Ethereum
+                          {NETWORK_LABELS[x.networkIndex]}
                         </Typography>
                       </Stack>
                     </Stack>

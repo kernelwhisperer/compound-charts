@@ -28,7 +28,7 @@ export function UsagePage({ show }: any) {
 
     $loading.set(true)
     $timeRange.set(undefined)
-    Promise.all([queryDailyUsage(marketId), wait(1_000)]).then(([usage]) => {
+    Promise.all([queryDailyUsage(market.networkIndex, marketId), wait(1_000)]).then(([usage]) => {
       setStats(usage)
       $loading.set(false)
     })

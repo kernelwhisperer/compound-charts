@@ -1,13 +1,7 @@
 import { createClient, fetchExchange, gql } from "urql/core"
+import { allClients } from "./connections"
 
-const API_URL = `https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3`
-
-const client = createClient({
-  exchanges: [fetchExchange],
-  url: API_URL,
-})
-
-export default async function query(marketId: string) {
+export default async function query(networkIndex: number, marketId: string) {
   const graphQuery = gql`
     {
       market(id: "${marketId}") {
@@ -22,7 +16,7 @@ export default async function query(marketId: string) {
       }
     }
   `
-  const response = await client.query(graphQuery, {}).toPromise()
+  const response = await allClients[networkIndex].query(graphQuery, {}).toPromise()
 
   if (response.error) {
     let errorMessage = response.error.toString()

@@ -28,7 +28,7 @@ export function AccountingPage({ show }: any) {
 
     $loading.set(true)
     $timeRange.set(undefined)
-    Promise.all([queryDailyAccounting(marketId), wait(1_000)]).then(([usage]) => {
+    Promise.all([queryDailyAccounting(market.networkIndex, marketId), wait(1_000)]).then(([usage]) => {
       setStats(usage)
       $loading.set(false)
     })
