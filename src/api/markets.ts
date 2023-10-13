@@ -1,11 +1,5 @@
-import { createClient, fetchExchange, gql } from "urql/core"
-
-const API_URL = `https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3`
-
-const client = createClient({
-  exchanges: [fetchExchange],
-  url: API_URL,
-})
+import { gql } from "urql/core"
+import { allClients } from "./connections"
 
 export default async function query() {
   const graphQuery = gql`
@@ -37,12 +31,9 @@ export default async function query() {
       }
     }
   `
-  const response = await client.query(graphQuery, {}).toPromise()
+  const responses = await Promise.all(
+    allClients.map((client) => client.query(graphQuery, {}).toPromise())
+  )
 
-  if (response.error) {
-    let errorMessage = response.error.toString()
-    throw new Error(errorMessage)
-  }
-
-  return response.data.markets
+  return responses.flatMap((response: any) => response.data?.markets)
 }
