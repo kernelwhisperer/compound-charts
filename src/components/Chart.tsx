@@ -24,6 +24,7 @@ export type ChartProps = {
   areaSeries?: boolean
   minValueZero?: boolean
   chartOpts?: any
+  secondChartOpts?: any
 }
 
 export function Chart(props: ChartProps) {
@@ -39,6 +40,7 @@ export function Chart(props: ChartProps) {
     areaSeries = false,
     minValueZero = false,
     chartOpts = {},
+    secondChartOpts = {},
   } = props
 
   const theme = useTheme()
@@ -121,7 +123,7 @@ export function Chart(props: ChartProps) {
           lineColor: "rgba(0, 211, 149, 0.8)",
           topColor: "rgba(0, 211, 149, 0.33)",
           bottomColor: "rgba(0, 211, 149, 0)",
-          lineType: 1,
+          lineType: 0,
           lineWidth: 2,
           autoscaleInfoProvider: minValueZero
             ? (original) => {
@@ -151,9 +153,9 @@ export function Chart(props: ChartProps) {
             lineColor: "rgba(143, 102, 255, 0.8)",
             topColor: "rgba(143, 102, 255, 0.33)",
             bottomColor: "rgba(143, 102, 255, 0)",
-            lineType: 1,
+            lineType: 0,
             lineWidth: 2,
-            ...chartOpts,
+            ...secondChartOpts,
           })
         : chartRef.current?.addHistogramSeries({
             color: "rgba(143, 102, 255, 1)",
@@ -169,18 +171,18 @@ export function Chart(props: ChartProps) {
       if (dataPoint?.chartId === chartId) return
       if (dataPoint) {
         let { value } = mainSeries.dataByIndex(dataPoint.logical) as any
-        let style = ""
+        let legendColor = ""
 
         if (secondData && diffMode) {
           const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
           value += secondValue
-          if (value === 0) style = '"color: #fff;"'
-          if (value < 0) style = '"color: rgba(143, 102, 255, 1);"'
+          if (value === 0) legendColor = "#fff"
+          if (value < 0) legendColor = "rgba(143, 102, 255, 1)"
         }
 
         let label = `${formatTime(
           (dataPoint.time as number) * 1000
-        )} · ${dataLabel} <strong style=${style}>${formatNumber(
+        )} · ${dataLabel} <strong style="color:${legendColor};">${formatNumber(
           value,
           significantDigits,
           compact ? "compact" : undefined
@@ -188,7 +190,9 @@ export function Chart(props: ChartProps) {
 
         if (secondData && !diffMode) {
           const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
-          label += ` · ${secondDataLabel} <strong style="color: rgba(143, 102, 255, 1);">${formatNumber(
+          label += ` · ${secondDataLabel} <strong style="color: ${
+            secondChartOpts.lineColor || "rgba(143, 102, 255, 1)"
+          };">${formatNumber(
             secondValue,
             significantDigits,
             compact ? "compact" : undefined
@@ -211,18 +215,18 @@ export function Chart(props: ChartProps) {
 
       if (param.time) {
         let { value } = param.seriesData.get(mainSeries) as any
-        let style = ""
+        let legendColor = ""
 
         if (secondData && diffMode) {
           const { value: secondValue } = param.seriesData.get(secondSeries) as any
           value += secondValue
-          if (value === 0) style = '"color: #fff;"'
-          if (value < 0) style = '"color: rgba(143, 102, 255, 1);"'
+          if (value === 0) legendColor = "#fff"
+          if (value < 0) legendColor = "rgba(143, 102, 255, 1)"
         }
 
         let label = `${formatTime(
           (param.time as number) * 1000
-        )} · ${dataLabel} <strong style=${style}>${formatNumber(
+        )} · ${dataLabel} <strong style="color:${legendColor};">${formatNumber(
           value,
           significantDigits,
           compact ? "compact" : undefined
@@ -230,7 +234,9 @@ export function Chart(props: ChartProps) {
 
         if (secondData && !diffMode) {
           const { value: secondValue } = param.seriesData.get(secondSeries) as any
-          label += ` · ${secondDataLabel} <strong style="color: rgba(143, 102, 255, 1);">${formatNumber(
+          label += ` · ${secondDataLabel} <strong style="color: ${
+            secondChartOpts.lineColor || "rgba(143, 102, 255, 1)"
+          };">${formatNumber(
             secondValue,
             significantDigits,
             compact ? "compact" : undefined
@@ -290,7 +296,7 @@ export function Chart(props: ChartProps) {
           fontSize: 13,
           fontFamily: RobotoMonoFF,
           "&> strong": {
-            color: theme.palette.secondary.main,
+            color: chartOpts.lineColor || theme.palette.secondary.main,
           },
         }}
       />

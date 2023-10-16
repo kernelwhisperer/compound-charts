@@ -17,9 +17,11 @@ import { Chart } from "../components/Chart"
 import queryMarkets from "../api/markets"
 import queryDailyUsage from "../api/daily-usage"
 import { UsagePage } from "./UsagePage"
-import { AccountingPage } from "./AccountingPage"
+import { DepositsPage } from "./DepositsPage"
 import { a, useTransition } from "@react-spring/web"
 import { NETWORK_IMAGES, NETWORK_LABELS } from "../api/connections"
+import { TvlPage } from "./TvlPage"
+import { InterestPage } from "./InterestPage"
 
 export function MarketPage({ show }: any) {
   const { networkIndex = "0", marketId } = useParams()
@@ -33,7 +35,7 @@ export function MarketPage({ show }: any) {
     })
   }, [])
 
-  const [tabIndex, setTabIndex] = useState(0)
+  const [tabIndex, setTabIndex] = useState(3)
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
@@ -50,7 +52,7 @@ export function MarketPage({ show }: any) {
 
   return (
     <AnimatedList gap={4} show={show}>
-      <Button
+      {/* <Button
         component={Link}
         to="/markets"
         size="small"
@@ -61,11 +63,12 @@ export function MarketPage({ show }: any) {
           paddingLeft: 1,
           paddingRight: 2,
           textTransform: "none",
+          marginBottom: -2
         }}
         startIcon={<KeyboardBackspace />}
       >
         Markets
-      </Button>
+      </Button> */}
       {market && (
         <Stack gap={2} direction="row" justifyContent="space-between" alignItems={"flex-start"}>
           <Stack gap={2} direction="row" alignItems="flex-start">
@@ -79,7 +82,7 @@ export function MarketPage({ show }: any) {
                     height: 28,
                     border: "2px solid var(--mui-palette-background-default)",
                   }}
-                            src={NETWORK_IMAGES[market.networkIndex]}
+                  src={NETWORK_IMAGES[market.networkIndex]}
                 />
               }
             >
@@ -93,7 +96,7 @@ export function MarketPage({ show }: any) {
                 {market.configuration.baseToken.token.name}
               </Typography>
               <Typography color="text.secondary" variant="subtitle2" fontFamily={RobotoSerifFF}>
-              {NETWORK_LABELS[market.networkIndex]}
+                {NETWORK_LABELS[market.networkIndex]}
               </Typography>
             </Stack>
           </Stack>
@@ -105,7 +108,7 @@ export function MarketPage({ show }: any) {
               borderRadius: 5,
               padding: 0.75,
               [`& .${tabsClasses.indicator}`]: {
-              borderRadius: 5,
+                borderRadius: 5,
                 height: "100%",
                 background: "rgba(143, 102, 255, 0.8)",
               },
@@ -116,17 +119,23 @@ export function MarketPage({ show }: any) {
               },
             }}
           >
-            <Tab label="Accounting" disableRipple />
             <Tab label="Usage" disableRipple />
+            <Tab label="Deposits" disableRipple />
+            <Tab label="TVL" disableRipple />
+            <Tab label="Interest rates" disableRipple />
           </Tabs>
         </Stack>
       )}
       {!market && <Skeleton variant="rounded" height={54} width={300} />}
       {transitions((_styles, item) =>
         item === 0 ? (
-          <AccountingPage key={"accounting"} show={tabIndex === 0} />
-          ) : (
-          <UsagePage key={"usage"} show={tabIndex === 1} />
+          <UsagePage key={"usage"} show={tabIndex === 0} />
+        ) : item === 1 ? (
+          <DepositsPage key={"deposits"} show={tabIndex === 1} />
+        ) : item === 2 ? (
+          <TvlPage key={"tvl"} show={tabIndex === 2} />
+        ) : (
+          <InterestPage key={"interest"} show={tabIndex === 3} />
         )
       )}
     </AnimatedList>

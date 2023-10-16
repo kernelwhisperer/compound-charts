@@ -5,7 +5,7 @@ import Container from "@mui/material/Container"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import { Avatar, AvatarGroup, Badge, Card, Paper, Skeleton, Stack } from "@mui/material"
-import { formatNumber, wait } from "../utils/utils"
+import { formatNumber, mergeAndReverse, wait } from "../utils/utils"
 import { RobotoMonoFF, RobotoSerifFF } from "../theme"
 import { RadialPercentage } from "../components/RadialPercentage"
 import { $loading, $timeRange } from "../stores/app"
@@ -14,10 +14,10 @@ import { $markets, getMarketById } from "../stores/markets"
 import { useStore } from "@nanostores/react"
 import { AnimatedList } from "../components/AnimatedList"
 import { Chart } from "../components/Chart"
-import queryDailyUsage from "../api/daily-usage"
-import queryProtocolDailyUsage from "../api/daily-protocol-usage"
+import queryDailyAccounting from "../api/daily-accounting"
+import queryProtocolDailyAccounting from "../api/daily-protocol-accounting"
 
-export function UsagePage({ show, protocol }: any) {
+export function TvlPage({ show, protocol }: any) {
   const { networkIndex = "0", marketId } = useParams()
   const market = useStore(getMarketById(parseInt(networkIndex), marketId))
 
@@ -32,10 +32,22 @@ export function UsagePage({ show, protocol }: any) {
     $timeRange.set(undefined)
 
     Promise.all([
-      protocol ? queryProtocolDailyUsage(markets) : queryDailyUsage(market.networkIndex, marketId as any),
+      protocol
+        ? queryProtocolDailyAccounting(markets)
+        : queryDailyAccounting(market.networkIndex, marketId as any),
       wait(1_000),
-    ]).then(([usage]) => {
-      setStats(usage)
+    ]).then(([stats]) => {
+      const supply = stats.supply.reverse()
+      const collateral = stats.collateral.reverse()
+      const borrow = stats.borrow.map((x) => ({ ...x, value: x.value * -1 })).reverse()
+
+      setStats({
+        tvl: mergeAndReverse([{ foo: supply }, { foo: collateral }], "foo"),
+        tvlExclBorrows: mergeAndReverse(
+          [{ foo: supply }, { foo: collateral }, { foo: borrow }],
+          "foo"
+        ),
+      })
       $loading.set(false)
     })
   }, [market, markets, protocol])
@@ -44,35 +56,35 @@ export function UsagePage({ show, protocol }: any) {
     <AnimatedList gap={2} show={show}>
       <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Transactions
-        </Typography>
-        {stats ? (
-          <Chart data={stats.txns} significantDigits={0} unitLabel="txns" />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Daily unique users
-        </Typography>
-        {stats ? (
-          <Chart data={stats.uniqueUsers} significantDigits={0} unitLabel="users" />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Inflows and outflows
+          Total value locked
         </Typography>
         {stats ? (
           <Chart
-            diffMode
-            data={stats.inflows}
-            secondData={stats.outflows}
-            significantDigits={0}
-            unitLabel="inflows"
+            data={stats.tvl}
+            significantDigits={2}
+            compact
+            unitLabel="USD"
+            dataLabel="TVL"
+            areaSeries
+            chartOpts={{ lineType: 2 }}
+          />
+        ) : (
+          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+        )}
+      </div>
+      <div>
+        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+          Total value locked (excl. borrows)
+        </Typography>
+        {stats ? (
+          <Chart
+            data={stats.tvlExclBorrows}
+            significantDigits={2}
+            compact
+            unitLabel="USD"
+            dataLabel="TVL"
+            areaSeries
+            chartOpts={{ lineType: 2 }}
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />

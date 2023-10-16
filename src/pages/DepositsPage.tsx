@@ -14,10 +14,11 @@ import { $markets, getMarketById } from "../stores/markets"
 import { useStore } from "@nanostores/react"
 import { AnimatedList } from "../components/AnimatedList"
 import { Chart } from "../components/Chart"
-import queryDailyUsage from "../api/daily-usage"
-import queryProtocolDailyUsage from "../api/daily-protocol-usage"
+import queryMarkets from "../api/markets"
+import queryDailyAccounting from "../api/daily-accounting"
+import queryProtocolDailyAccounting from "../api/daily-protocol-accounting"
 
-export function UsagePage({ show, protocol }: any) {
+export function DepositsPage({ show, protocol }: any) {
   const { networkIndex = "0", marketId } = useParams()
   const market = useStore(getMarketById(parseInt(networkIndex), marketId))
 
@@ -32,7 +33,7 @@ export function UsagePage({ show, protocol }: any) {
     $timeRange.set(undefined)
 
     Promise.all([
-      protocol ? queryProtocolDailyUsage(markets) : queryDailyUsage(market.networkIndex, marketId as any),
+      protocol ? queryProtocolDailyAccounting(markets) : queryDailyAccounting(market.networkIndex, marketId as any),
       wait(1_000),
     ]).then(([usage]) => {
       setStats(usage)
@@ -44,35 +45,35 @@ export function UsagePage({ show, protocol }: any) {
     <AnimatedList gap={2} show={show}>
       <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Transactions
-        </Typography>
-        {stats ? (
-          <Chart data={stats.txns} significantDigits={0} unitLabel="txns" />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Daily unique users
-        </Typography>
-        {stats ? (
-          <Chart data={stats.uniqueUsers} significantDigits={0} unitLabel="users" />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Inflows and outflows
+          Supplied & borrowed
         </Typography>
         {stats ? (
           <Chart
-            diffMode
-            data={stats.inflows}
-            secondData={stats.outflows}
-            significantDigits={0}
-            unitLabel="inflows"
+            data={stats.supply}
+            secondData={stats.borrow}
+            significantDigits={2}
+            compact
+            unitLabel="USD"
+            dataLabel="Supplied"
+            secondDataLabel="Borrowed"
+          />
+        ) : (
+          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+        )}
+      </div>
+      <div>
+        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+          Collateral & borrowed
+        </Typography>
+        {stats ? (
+          <Chart
+            data={stats.collateral}
+            secondData={stats.borrow}
+            significantDigits={2}
+            compact
+            unitLabel="USD"
+            dataLabel="Collateral"
+            secondDataLabel="Borrowed"
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />

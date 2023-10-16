@@ -15,51 +15,37 @@ import { useStore } from "@nanostores/react"
 import { AnimatedList } from "../components/AnimatedList"
 import { Chart } from "../components/Chart"
 import queryMarkets from "../api/markets"
-import queryDailyAccounting from "../api/daily-accounting"
+import queryDailyInterest from "../api/daily-interest"
+import queryProtocolDailyInterest from "../api/daily-protocol-interest"
 
-export function AccountingPage({ show }: any) {
+export function InterestPage({ show, protocol }: any) {
   const { networkIndex = "0", marketId } = useParams()
   const market = useStore(getMarketById(parseInt(networkIndex), marketId))
 
   const [stats, setStats] = useState<any>()
-  // console.log("📜 LOG > AccountingPage > stats:", stats)
+  const markets = useStore($markets)
 
   useEffect(() => {
-    if (!market || !marketId) return
+    if (!protocol && (!market || !marketId)) return
+    if (protocol && !markets) return
 
     $loading.set(true)
     $timeRange.set(undefined)
-    Promise.all([queryDailyAccounting(market.networkIndex, marketId), wait(1_000)]).then(
-      ([usage]) => {
-        setStats(usage)
-        $loading.set(false)
-      }
-    )
-  }, [market])
+
+    Promise.all([
+      protocol
+        ? queryProtocolDailyInterest(markets)
+        : queryDailyInterest(market.networkIndex, marketId as any),
+      wait(1_000),
+    ]).then(([usage]) => {
+      setStats(usage)
+      $loading.set(false)
+    })
+  }, [market, markets, protocol])
 
   return (
     <AnimatedList gap={2} show={show}>
       <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Net Earn APR & Net Borrow APR
-        </Typography>
-        {stats ? (
-          <Chart
-            data={stats.netBorrowApr}
-            secondData={stats.netSupplyApr}
-            significantDigits={2}
-            compact
-            unitLabel="%"
-            dataLabel="Net Borrow APR"
-            secondDataLabel="Net Earn APR"
-            areaSeries
-            minValueZero
-          />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
-      {/* <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
           Earn APR
         </Typography>
@@ -70,27 +56,19 @@ export function AccountingPage({ show }: any) {
             significantDigits={2}
             compact
             unitLabel="%"
-            dataLabel="Net Borrow APR"
-            secondDataLabel="Net Earn APR"
+            dataLabel="Net Earn APR (incl. rewards)"
+            secondDataLabel="Earn APR"
             areaSeries
-          />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div> */}
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Supplied & borrowed
-        </Typography>
-        {stats ? (
-          <Chart
-            data={stats.supply}
-            secondData={stats.borrow}
-            significantDigits={2}
-            compact
-            unitLabel="USD"
-            dataLabel="Supplied"
-            secondDataLabel="Borrowed"
+            chartOpts={{
+              lineColor: "rgba(255, 223, 0, 0.8)",
+              topColor: "rgba(255, 223, 0, 0.13)",
+              bottomColor: "rgba(255, 223, 0, 0)",
+            }}
+            secondChartOpts={{
+              lineColor: "rgba(0, 211, 149, 0.8)",
+              topColor: "rgba(0, 211, 149, 0.33)",
+              bottomColor: "rgba(0, 211, 149, 0)",
+            }}
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
@@ -98,17 +76,23 @@ export function AccountingPage({ show }: any) {
       </div>
       <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Collateral & borrowed
+          Borrow APR
         </Typography>
         {stats ? (
           <Chart
-            data={stats.collateral}
-            secondData={stats.borrow}
+            data={stats.borrowApr}
+            secondData={stats.netBorrowApr}
             significantDigits={2}
             compact
-            unitLabel="USD"
-            dataLabel="Collateral"
-            secondDataLabel="Borrowed"
+            unitLabel="%"
+            secondDataLabel="Net Borrow APR (incl. rewards)"
+            dataLabel="Borrow APR"
+            areaSeries
+            chartOpts={{
+              lineColor: "rgba(128, 128, 128, 0.8)",
+              topColor: "rgba(128, 128, 128, 0.1)",
+              bottomColor: "rgba(255, 223, 0, 0)",
+            }}
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />

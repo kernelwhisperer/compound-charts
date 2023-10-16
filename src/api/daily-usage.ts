@@ -1,11 +1,11 @@
 import { createClient, fetchExchange, gql } from "urql/core"
 import { allClients } from "./connections"
 
-export default async function query(networkIndex: number, marketId: string) {
+export default async function query(networkIndex: number, marketId: string, dir = "asc") {
   const graphQuery = gql`
     {
       market(id: "${marketId}") {
-        dailyUsage(first: 1000, orderBy: timestamp, orderDirection: asc) {
+        dailyUsage(first: 1000, orderBy: timestamp, orderDirection: ${dir}) {
           timestamp
           usage {
              uniqueUsersCount

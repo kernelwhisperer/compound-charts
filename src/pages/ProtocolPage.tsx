@@ -2,7 +2,18 @@ import React, { useEffect, useState } from "react"
 import Container from "@mui/material/Container"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
-import { Avatar, AvatarGroup, Badge, Card, Paper, Skeleton, Stack, Tab, Tabs, tabsClasses } from "@mui/material"
+import {
+  Avatar,
+  AvatarGroup,
+  Badge,
+  Card,
+  Paper,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  tabsClasses,
+} from "@mui/material"
 import queryMarkets from "../api/markets"
 import { formatNumber, wait } from "../utils/utils"
 import { RobotoMonoFF, RobotoSerifFF } from "../theme"
@@ -16,6 +27,11 @@ import { Tooltip } from "../components/Tooltip"
 import { NETWORK_IMAGES, NETWORK_LABELS } from "../api/connections"
 import { Chart } from "../components/Chart"
 import queryDailyAccounting from "../api/daily-protocol-accounting"
+import { a, useTransition } from "@react-spring/web"
+import { UsagePage } from "./UsagePage"
+import { DepositsPage } from "./DepositsPage"
+import { TvlPage } from "./TvlPage"
+import { InterestPage } from "./InterestPage"
 
 export function ProtocolPage({ show }: any) {
   const markets = useStore($markets)
@@ -41,15 +57,23 @@ export function ProtocolPage({ show }: any) {
     })
   }, [markets])
 
-  
   const [tabIndex, setTabIndex] = useState(0)
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
   }
 
+  const transitions = useTransition(tabIndex, {
+    exitBeforeEnter: true,
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    immediate: true,
+    delay: 250,
+  })
+
   return (
-    <AnimatedList gap={2} show={show}>
+    <AnimatedList gap={4} show={show}>
       <Stack gap={2} direction="row" justifyContent="space-between" alignItems={"flex-start"}>
         <Stack gap={2} direction="row" alignItems="center">
           <Avatar
@@ -86,46 +110,23 @@ export function ProtocolPage({ show }: any) {
             },
           }}
         >
-          <Tab label="TVL" disableRipple />
           <Tab label="Usage" disableRipple />
+          <Tab label="Deposits" disableRipple />
+          <Tab label="TVL" disableRipple />
+          <Tab label="Interest rates" disableRipple />
         </Tabs>
       </Stack>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Total value locked
-        </Typography>
-        {stats ? (
-          <Chart
-            data={stats.tvl}
-            significantDigits={2}
-            compact
-            unitLabel="USD"
-            dataLabel="TVL"
-            areaSeries
-            chartOpts={{ lineType: 2 }}
-          />
+      {transitions((_styles, item) =>
+        item === 0 ? (
+          <UsagePage key={"usage"} show={tabIndex === 0} protocol />
+        ) : item === 1 ? (
+          <DepositsPage key={"deposits"} show={tabIndex === 1} protocol />
+        ) : item === 2 ? (
+          <TvlPage key={"tvl"} show={tabIndex === 2} />
         ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Total value locked (excl. borrows)
-        </Typography>
-        {stats ? (
-          <Chart
-            data={stats.tvlExclBorrows}
-            significantDigits={2}
-            compact
-            unitLabel="USD"
-            dataLabel="TVL"
-            areaSeries
-            chartOpts={{ lineType: 2 }}
-          />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
+          <InterestPage key={"interest"} show={tabIndex === 3} protocol/>
+        )
+      )}
     </AnimatedList>
   )
 }

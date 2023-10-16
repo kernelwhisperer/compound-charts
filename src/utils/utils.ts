@@ -30,6 +30,29 @@ export function formatTime(time) {
   return new Intl.DateTimeFormat(window.navigator.language, {
     dateStyle: "long",
     hourCycle: "h23",
-    timeStyle: "short",
   }).format(time)
+}
+
+
+export function mergeAndReverse(markets, metricName) {
+  let merged: any[] = []
+
+  for (let i = 0; i <= 1000; i++) {
+    let time
+    const marketValues = markets.map((market) => {
+      if (i < market[metricName].length) {
+        if (!time) {
+          time = market[metricName][i].time
+        }
+        return market[metricName][i].value
+      }
+      return 0
+    })
+    const mergedValue = marketValues.reduce((sum, x) => sum + x, 0)
+
+    if (mergedValue !== 0) merged.push({ time, value: mergedValue })
+    else break
+  }
+
+  return merged.reverse()
 }
