@@ -34,10 +34,6 @@ import { TvlPage } from "./TvlPage"
 import { InterestPage } from "./InterestPage"
 
 export function ProtocolPage({ show }: any) {
-  const markets = useStore($markets)
-
-  const [stats, setStats] = useState<any>()
-
   useEffect(() => {
     if ($markets.get().length) return
 
@@ -45,17 +41,6 @@ export function ProtocolPage({ show }: any) {
       $markets.set(markets)
     })
   }, [])
-
-  useEffect(() => {
-    if (!markets.length) return
-
-    $loading.set(true)
-    $timeRange.set(undefined)
-    queryDailyAccounting(markets).then((stats) => {
-      setStats(stats)
-      $loading.set(false)
-    })
-  }, [markets])
 
   const [tabIndex, setTabIndex] = useState(0)
 
@@ -122,7 +107,7 @@ export function ProtocolPage({ show }: any) {
         ) : item === 1 ? (
           <DepositsPage key={"deposits"} show={tabIndex === 1} protocol />
         ) : item === 2 ? (
-          <TvlPage key={"tvl"} show={tabIndex === 2} />
+          <TvlPage key={"tvl"} show={tabIndex === 2} protocol />
         ) : (
           <InterestPage key={"interest"} show={tabIndex === 3} protocol/>
         )

@@ -18,12 +18,12 @@ export async function wait(ms: number): Promise<void> {
 
 export function getCrosshairDataPoint(series, param, chartId) {
   if (!param.time) {
-    return null;
+    return null
   }
-  const dataPoint = param.seriesData.get(series);
+  const dataPoint = param.seriesData.get(series)
   dataPoint.logical = param.logical
   dataPoint.chartId = chartId
-  return dataPoint || null;
+  return dataPoint || null
 }
 
 export function formatTime(time) {
@@ -33,24 +33,36 @@ export function formatTime(time) {
   }).format(time)
 }
 
-
-export function mergeAndReverse(markets, metricName) {
+export function mergeAndReverse(markets, metricName, avg = false) {
   let merged: any[] = []
 
   for (let i = 0; i <= 1000; i++) {
     let time
-    const marketValues = markets.map((market) => {
+    let marketValues = markets.map((market) => {
       if (i < market[metricName].length) {
         if (!time) {
           time = market[metricName][i].time
         }
         return market[metricName][i].value
       }
-      return 0
+      return undefined
     })
-    const mergedValue = marketValues.reduce((sum, x) => sum + x, 0)
 
-    if (mergedValue !== 0) merged.push({ time, value: mergedValue })
+    let mergedValue
+    if (avg) {
+      // Median calculation
+      marketValues = marketValues.filter((x) => x !== undefined).sort((a, b) => a - b)
+      const n = marketValues.length
+      if (n % 2 === 0) {
+        mergedValue = (marketValues[n / 2 - 1] + marketValues[n / 2]) / 2
+      } else {
+        mergedValue = marketValues[Math.floor(n / 2)]
+      }
+    } else {
+      mergedValue = marketValues.reduce((sum, x) => (x ? sum + x : sum), 0)
+    }
+
+    if (time) merged.push({ time, value: mergedValue })
     else break
   }
 

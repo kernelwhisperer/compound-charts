@@ -47,7 +47,7 @@ export function InterestPage({ show, protocol }: any) {
     <AnimatedList gap={2} show={show}>
       <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Earn APR
+          Earn APR {protocol ? "(median)" : null}
         </Typography>
         {stats ? (
           <Chart
@@ -76,7 +76,7 @@ export function InterestPage({ show, protocol }: any) {
       </div>
       <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Borrow APR
+          Borrow APR {protocol ? "(median)" : null}
         </Typography>
         {stats ? (
           <Chart

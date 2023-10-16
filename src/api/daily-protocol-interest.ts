@@ -14,10 +14,10 @@ export default async function query(markets: any) {
 
   const protocol: any = {}
 
-  protocol.borrowApr = mergeAndReverse(results, "borrowApr")
-  protocol.supplyApr = mergeAndReverse(results, "supplyApr")
-  protocol.netBorrowApr = mergeAndReverse(results, "netBorrowApr")
-  protocol.netSupplyApr = mergeAndReverse(results, "netSupplyApr")
+  protocol.borrowApr = mergeAndReverse(results, "borrowApr", true)
+  protocol.supplyApr = mergeAndReverse(results, "supplyApr", true)
+  protocol.netBorrowApr = mergeAndReverse(results, "netBorrowApr", true)
+  protocol.netSupplyApr = mergeAndReverse(results, "netSupplyApr", true)
 
   return protocol
 }
