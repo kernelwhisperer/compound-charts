@@ -22,8 +22,8 @@ import { a, useTransition } from "@react-spring/web"
 import { NETWORK_IMAGES, NETWORK_LABELS } from "../api/connections"
 
 export function MarketPage({ show }: any) {
-  const { marketId } = useParams()
-  const market = useStore(getMarketById(marketId))
+  const { networkIndex = "0", marketId } = useParams()
+  const market = useStore(getMarketById(parseInt(networkIndex), marketId))
 
   useEffect(() => {
     if ($markets.get().length) return
@@ -52,7 +52,7 @@ export function MarketPage({ show }: any) {
     <AnimatedList gap={4} show={show}>
       <Button
         component={Link}
-        to="/"
+        to="/markets"
         size="small"
         color="primary"
         sx={{

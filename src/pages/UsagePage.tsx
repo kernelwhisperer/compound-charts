@@ -18,8 +18,9 @@ import queryMarkets from "../api/markets"
 import queryDailyUsage from "../api/daily-usage"
 
 export function UsagePage({ show }: any) {
-  const { marketId } = useParams()
-  const market = useStore(getMarketById(marketId))
+  const { networkIndex = "0", marketId } = useParams()
+  const market = useStore(getMarketById(parseInt(networkIndex), marketId))
+
 
   const [stats, setStats] = useState<any>()
 

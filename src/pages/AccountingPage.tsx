@@ -18,8 +18,8 @@ import queryMarkets from "../api/markets"
 import queryDailyAccounting from "../api/daily-accounting"
 
 export function AccountingPage({ show }: any) {
-  const { marketId } = useParams()
-  const market = useStore(getMarketById(marketId))
+  const { networkIndex = "0", marketId } = useParams()
+  const market = useStore(getMarketById(parseInt(networkIndex), marketId))
 
   const [stats, setStats] = useState<any>()
   // console.log("📜 LOG > AccountingPage > stats:", stats)
@@ -53,6 +53,7 @@ export function AccountingPage({ show }: any) {
             dataLabel="Net Borrow APR"
             secondDataLabel="Net Earn APR"
             areaSeries
+            minValueZero
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />

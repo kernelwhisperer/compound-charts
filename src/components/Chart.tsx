@@ -22,6 +22,8 @@ export type ChartProps = {
   dataLabel?: string
   secondDataLabel?: string
   areaSeries?: boolean
+  minValueZero?: boolean
+  chartOpts?: any
 }
 
 export function Chart(props: ChartProps) {
@@ -35,6 +37,8 @@ export function Chart(props: ChartProps) {
     dataLabel = "",
     secondDataLabel = "",
     areaSeries = false,
+    minValueZero = false,
+    chartOpts = {},
   } = props
 
   const theme = useTheme()
@@ -60,13 +64,13 @@ export function Chart(props: ChartProps) {
       crosshair: {
         horzLine: {
           labelBackgroundColor: primaryColor,
-          color: areaSeries ? '#ffffff80': "#fff",
+          color: areaSeries ? "#ffffff80" : "#fff",
           // style: 4,
         },
         mode: CrosshairMode.Normal,
         vertLine: {
           labelBackgroundColor: primaryColor,
-          color: areaSeries ? '#ffffff80': "#fff",
+          color: areaSeries ? "#ffffff80" : "#fff",
           // style: 4
         },
       },
@@ -97,6 +101,7 @@ export function Chart(props: ChartProps) {
       borderVisible: false,
       // rightOffset: 4,
     })
+    chartRef.current.timeScale().fitContent()
 
     chartRef.current.priceScale("right").applyOptions({
       borderVisible: false,
@@ -105,7 +110,7 @@ export function Chart(props: ChartProps) {
         bottom: 0,
         top: 0.1,
       },
-      autoScale: false,
+      autoScale: true,
     })
 
     window.addEventListener("resize", handleResize)
@@ -118,14 +123,17 @@ export function Chart(props: ChartProps) {
           bottomColor: "rgba(0, 211, 149, 0)",
           lineType: 1,
           lineWidth: 2,
-          autoscaleInfoProvider: (original) => {
-            const res = original()
-            if (res !== null) {
-              res.priceRange.minValue = Math.min(0, res.priceRange.minValue)
-              // res.priceRange.maxValue += 2
-            }
-            return res
-          },
+          autoscaleInfoProvider: minValueZero
+            ? (original) => {
+                const res = original()
+                if (res !== null) {
+                  res.priceRange.minValue = Math.min(0, res.priceRange.minValue)
+                  // res.priceRange.maxValue += 2
+                }
+                return res
+              }
+            : undefined,
+          ...chartOpts,
         })
       : chartRef.current?.addHistogramSeries({
           color: "rgba(0, 211, 149, 1)",
@@ -145,6 +153,7 @@ export function Chart(props: ChartProps) {
             bottomColor: "rgba(143, 102, 255, 0)",
             lineType: 1,
             lineWidth: 2,
+            ...chartOpts,
           })
         : chartRef.current?.addHistogramSeries({
             color: "rgba(143, 102, 255, 1)",

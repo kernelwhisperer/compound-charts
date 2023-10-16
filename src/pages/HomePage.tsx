@@ -79,9 +79,6 @@ export function HomePage({ show }: any) {
 
   return (
     <AnimatedList gap={2} show={show}>
-      <Typography variant="h5" fontFamily={RobotoSerifFF}>
-        Markets
-      </Typography>
       <AnimatedList gap={2} direction="row" flexWrap="wrap" show={show}>
         {markets.length === 0
           ? [
@@ -91,6 +88,7 @@ export function HomePage({ show }: any) {
               <Skeleton key={3} variant="rounded" height={240} width={360} />,
               <Skeleton key={4} variant="rounded" height={240} width={360} />,
               <Skeleton key={5} variant="rounded" height={240} width={360} />,
+              <Skeleton key={6} variant="rounded" height={240} width={360} />,
             ]
           : markets.map((x) => (
               <Tooltip
@@ -99,7 +97,7 @@ export function HomePage({ show }: any) {
               >
                 <Card
                   component={Link}
-                  to={`/${x.configuration.id}`}
+                  to={`/market/${x.networkIndex}/${x.configuration.id}`}
                   variant="outlined"
                   sx={(theme) => ({
                     transition: theme.transitions.create(["transform", "background-color"], {
