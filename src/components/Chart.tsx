@@ -21,6 +21,7 @@ export type ChartProps = {
   diffMode?: boolean
   dataLabel?: string
   secondDataLabel?: string
+  areaSeries?: boolean
 }
 
 export function Chart(props: ChartProps) {
@@ -33,6 +34,7 @@ export function Chart(props: ChartProps) {
     unitLabel = "",
     dataLabel = "",
     secondDataLabel = "",
+    areaSeries = false,
   } = props
 
   const theme = useTheme()
@@ -58,12 +60,14 @@ export function Chart(props: ChartProps) {
       crosshair: {
         horzLine: {
           labelBackgroundColor: primaryColor,
-          color: primaryColor,
+          color: areaSeries ? '#ffffff80': "#fff",
+          // style: 4,
         },
         mode: CrosshairMode.Normal,
         vertLine: {
           labelBackgroundColor: primaryColor,
-          color: primaryColor,
+          color: areaSeries ? '#ffffff80': "#fff",
+          // style: 4
         },
       },
       grid: {
@@ -101,29 +105,51 @@ export function Chart(props: ChartProps) {
         bottom: 0,
         top: 0.1,
       },
+      autoScale: false,
     })
 
     window.addEventListener("resize", handleResize)
 
-    const mainSeries = chartRef.current?.addHistogramSeries({
-      // color: '#ffffffb3',
-      color: secondaryColor,
-      // lineType: 2,
-      priceLineVisible: false,
-      // lastValueVisible: false
-    })
+    const mainSeries = areaSeries
+      ? chartRef.current?.addAreaSeries({
+          priceLineVisible: false,
+          lineColor: "rgba(0, 211, 149, 0.8)",
+          topColor: "rgba(0, 211, 149, 0.33)",
+          bottomColor: "rgba(0, 211, 149, 0)",
+          lineType: 1,
+          lineWidth: 2,
+          autoscaleInfoProvider: (original) => {
+            const res = original()
+            if (res !== null) {
+              res.priceRange.minValue = Math.min(0, res.priceRange.minValue)
+              // res.priceRange.maxValue += 2
+            }
+            return res
+          },
+        })
+      : chartRef.current?.addHistogramSeries({
+          color: "rgba(0, 211, 149, 1)",
+          priceLineVisible: false,
+        })
 
     mainSeries.setData(data)
 
     let secondSeries
 
     if (secondData) {
-      secondSeries = chartRef.current?.addHistogramSeries({
-        color: "#8f66ff",
-        // lineType: 2,
-        priceLineVisible: false,
-        // lastValueVisible: false
-      })
+      secondSeries = areaSeries
+        ? chartRef.current?.addAreaSeries({
+            priceLineVisible: false,
+            lineColor: "rgba(143, 102, 255, 0.8)",
+            topColor: "rgba(143, 102, 255, 0.33)",
+            bottomColor: "rgba(143, 102, 255, 0)",
+            lineType: 1,
+            lineWidth: 2,
+          })
+        : chartRef.current?.addHistogramSeries({
+            color: "rgba(143, 102, 255, 1)",
+            priceLineVisible: false,
+          })
 
       secondSeries.setData(secondData)
     }
@@ -140,7 +166,7 @@ export function Chart(props: ChartProps) {
           const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
           value += secondValue
           if (value === 0) style = '"color: #fff;"'
-          if (value < 0) style = '"color: #8f66ff;"'
+          if (value < 0) style = '"color: rgba(143, 102, 255, 1);"'
         }
 
         let label = `${formatTime(
@@ -153,7 +179,7 @@ export function Chart(props: ChartProps) {
 
         if (secondData && !diffMode) {
           const { value: secondValue } = secondSeries.dataByIndex(dataPoint.logical) as any
-          label += ` · ${secondDataLabel} <strong style="color: #8f66ff;">${formatNumber(
+          label += ` · ${secondDataLabel} <strong style="color: rgba(143, 102, 255, 1);">${formatNumber(
             secondValue,
             significantDigits,
             compact ? "compact" : undefined
@@ -182,7 +208,7 @@ export function Chart(props: ChartProps) {
           const { value: secondValue } = param.seriesData.get(secondSeries) as any
           value += secondValue
           if (value === 0) style = '"color: #fff;"'
-          if (value < 0) style = '"color: #8f66ff;"'
+          if (value < 0) style = '"color: rgba(143, 102, 255, 1);"'
         }
 
         let label = `${formatTime(
@@ -195,7 +221,7 @@ export function Chart(props: ChartProps) {
 
         if (secondData && !diffMode) {
           const { value: secondValue } = param.seriesData.get(secondSeries) as any
-          label += ` · ${secondDataLabel} <strong style="color: #8f66ff;">${formatNumber(
+          label += ` · ${secondDataLabel} <strong style="color: rgba(143, 102, 255, 1);">${formatNumber(
             secondValue,
             significantDigits,
             compact ? "compact" : undefined
@@ -236,7 +262,7 @@ export function Chart(props: ChartProps) {
       variant="outlined"
       sx={{
         position: "relative",
-        "& tr:first-of-type td": { cursor: "crosshair" },
+        "& tr:first-of-type td": { cursor: "none" },
         width: "100%",
         height: 400,
         overflow: "hidden",

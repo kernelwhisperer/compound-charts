@@ -11,6 +11,10 @@ export default async function query(networkIndex: number, marketId: string) {
             totalBaseSupplyUsd
             totalBaseBorrowUsd
             collateralBalanceUsd
+            supplyApr
+            borrowApr
+            rewardSupplyApr
+            rewardBorrowApr
           }
         }
       }
@@ -38,6 +42,26 @@ export default async function query(networkIndex: number, marketId: string) {
   market.collateral = market.dailyMarketAccounting.map((x: any) => ({
     time: parseInt(x.timestamp),
     value: parseInt(x.accounting.collateralBalanceUsd),
+  }))
+
+  market.borrowApr = market.dailyMarketAccounting.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: parseFloat(x.accounting.borrowApr) * 100,
+  }))
+
+  market.supplyApr = market.dailyMarketAccounting.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: parseFloat(x.accounting.supplyApr) * 100,
+  }))
+  
+  market.netBorrowApr = market.dailyMarketAccounting.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: (parseFloat(x.accounting.borrowApr) - parseFloat(x.accounting.rewardBorrowApr)) * 100,
+  }))
+
+  market.netSupplyApr = market.dailyMarketAccounting.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: (parseFloat(x.accounting.supplyApr) + parseFloat(x.accounting.rewardSupplyApr)) * 100,
   }))
 
   return market

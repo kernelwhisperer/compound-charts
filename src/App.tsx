@@ -53,7 +53,7 @@ export default function App() {
               {
                 ...styles,
                 position: "absolute",
-                maxWidth: 1200,
+                maxWidth: 1200-48,
                 width: "calc(100% - 48px)",
                 paddingBottom: 16,
               } as any

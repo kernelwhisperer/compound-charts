@@ -12,7 +12,7 @@ const theme = extendTheme({
           main: "#fff",
         },
         secondary: {
-          main: "#00d395",
+          main: "rgb(0, 211, 149)",
         },
         background: {
           default: "rgb(42, 45, 53)",

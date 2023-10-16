@@ -22,20 +22,61 @@ export function AccountingPage({ show }: any) {
   const market = useStore(getMarketById(marketId))
 
   const [stats, setStats] = useState<any>()
+  // console.log("📜 LOG > AccountingPage > stats:", stats)
 
   useEffect(() => {
     if (!market || !marketId) return
 
     $loading.set(true)
     $timeRange.set(undefined)
-    Promise.all([queryDailyAccounting(market.networkIndex, marketId), wait(1_000)]).then(([usage]) => {
-      setStats(usage)
-      $loading.set(false)
-    })
+    Promise.all([queryDailyAccounting(market.networkIndex, marketId), wait(1_000)]).then(
+      ([usage]) => {
+        setStats(usage)
+        $loading.set(false)
+      }
+    )
   }, [market])
 
   return (
     <AnimatedList gap={2} show={show}>
+      <div>
+        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+          Net Earn APR & Net Borrow APR
+        </Typography>
+        {stats ? (
+          <Chart
+            data={stats.netBorrowApr}
+            secondData={stats.netSupplyApr}
+            significantDigits={2}
+            compact
+            unitLabel="%"
+            dataLabel="Net Borrow APR"
+            secondDataLabel="Net Earn APR"
+            areaSeries
+          />
+        ) : (
+          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+        )}
+      </div>
+      {/* <div>
+        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
+          Earn APR
+        </Typography>
+        {stats ? (
+          <Chart
+            data={stats.netSupplyApr}
+            secondData={stats.supplyApr}
+            significantDigits={2}
+            compact
+            unitLabel="%"
+            dataLabel="Net Borrow APR"
+            secondDataLabel="Net Earn APR"
+            areaSeries
+          />
+        ) : (
+          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
+        )}
+      </div> */}
       <div>
         <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
           Supplied & borrowed

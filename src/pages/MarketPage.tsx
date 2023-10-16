@@ -19,6 +19,7 @@ import queryDailyUsage from "../api/daily-usage"
 import { UsagePage } from "./UsagePage"
 import { AccountingPage } from "./AccountingPage"
 import { a, useTransition } from "@react-spring/web"
+import { NETWORK_IMAGES, NETWORK_LABELS } from "../api/connections"
 
 export function MarketPage({ show }: any) {
   const { marketId } = useParams()
@@ -78,7 +79,7 @@ export function MarketPage({ show }: any) {
                     height: 28,
                     border: "2px solid var(--mui-palette-background-default)",
                   }}
-                  src={`https://app.compound.finance/images/assets/asset_ETHEREUM.svg`}
+                            src={NETWORK_IMAGES[market.networkIndex]}
                 />
               }
             >
@@ -92,7 +93,7 @@ export function MarketPage({ show }: any) {
                 {market.configuration.baseToken.token.name}
               </Typography>
               <Typography color="text.secondary" variant="subtitle2" fontFamily={RobotoSerifFF}>
-                Ethereum
+              {NETWORK_LABELS[market.networkIndex]}
               </Typography>
             </Stack>
           </Stack>
@@ -106,7 +107,7 @@ export function MarketPage({ show }: any) {
               [`& .${tabsClasses.indicator}`]: {
               borderRadius: 5,
                 height: "100%",
-                background: "#8f66ff80",
+                background: "rgba(143, 102, 255, 0.8)",
               },
               [`& .${tabsClasses.flexContainer} > button`]: {
                 zIndex: 2,
@@ -115,17 +116,17 @@ export function MarketPage({ show }: any) {
               },
             }}
           >
-            <Tab label="Usage" disableRipple />
             <Tab label="Accounting" disableRipple />
+            <Tab label="Usage" disableRipple />
           </Tabs>
         </Stack>
       )}
       {!market && <Skeleton variant="rounded" height={54} width={300} />}
       {transitions((_styles, item) =>
         item === 0 ? (
-          <UsagePage key={"usage"} show={tabIndex === 0} />
-        ) : (
-          <AccountingPage key={"accounting"} show={tabIndex === 1} />
+          <AccountingPage key={"accounting"} show={tabIndex === 0} />
+          ) : (
+          <UsagePage key={"usage"} show={tabIndex === 1} />
         )
       )}
     </AnimatedList>

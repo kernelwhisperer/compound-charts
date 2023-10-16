@@ -25,7 +25,7 @@ export function RadialPercentage({ percentage }: any) {
           animationEasing="ease-in-out"
           animationBegin={200}
         >
-          <Cell key="Percentage" fill="#00D395" />
+          <Cell key="Percentage" fill="rgb(0, 211, 149)" />
         </Pie>
       </PieChart>
     </>

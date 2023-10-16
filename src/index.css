@@ -18,9 +18,9 @@
 .st1 {
   fill-rule: evenodd;
   clip-rule: evenodd;
-  fill: #00d395;
+  fill: rgb(0, 211, 149);
   fill-opacity: 1;
-  stroke: #00d395;
+  stroke: rgb(0, 211, 149);
   stroke-width: 28px;
 }
 
@@ -64,7 +64,7 @@
 
 html {
   scrollbar-width: thin;
-  --main: #00d395;
+  --main: rgb(0, 211, 149);
   overflow: scroll;
 }
 
@@ -86,10 +86,9 @@ html {
 
 
 ::-webkit-scrollbar-thumb {
-  background: #00d39555;
+  background: rgb(100, 106, 124);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--main);
-  
+  background: rgb(133, 141, 161);
 }
