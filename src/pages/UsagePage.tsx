@@ -73,6 +73,7 @@ export function UsagePage({ show, protocol }: any) {
             secondData={stats.outflows}
             significantDigits={0}
             unitLabel="inflows"
+            dataLabel="Netflows (inflows-outflows) "
           />
         ) : (
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
