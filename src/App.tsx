@@ -38,10 +38,10 @@ export default function App() {
           </Typography>
           <Typography variant="caption" sx={{ marginLeft: 11, marginBottom: 5 }} component="div">
             Built with ❤️ by{" "}
-            <MuiLink target="_blank" href="mailto:hello@danielconstantin.net">
-              hello@danielconstantin.net
+            <MuiLink target="_blank" href="https://twitter.com/kernelwhisperer">
+              @kernelwhisperer
             </MuiLink>{" "}
-            (open to work) for{" "}
+            for{" "}
             <MuiLink target="_blank" href="https://ethglobal.com/events/ethonline2023">
               EthGlobal 2023
             </MuiLink>{" "}
