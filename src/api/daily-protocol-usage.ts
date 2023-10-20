@@ -16,6 +16,7 @@ export default async function query(markets: any) {
   protocol.uniqueUsers = mergeAndReverse(results, "uniqueUsers")
   protocol.inflows = mergeAndReverse(results, "inflows")
   protocol.outflows = mergeAndReverse(results, "outflows")
+  protocol.liquidations = mergeAndReverse(results, "liquidations")
 
   return protocol
 }

@@ -12,6 +12,7 @@ export default async function query(networkIndex: number, marketId: string, dir 
              interactionCount
              supplyBaseCount
              withdrawBaseCount
+             liquidationCount
           }
         }
       }
@@ -44,6 +45,11 @@ export default async function query(networkIndex: number, marketId: string, dir 
   market.outflows = market.dailyUsage.map((x: any) => ({
     time: parseInt(x.timestamp),
     value: parseInt(x.usage.withdrawBaseCount) * -1,
+  }))
+
+  market.liquidations = market.dailyUsage.map((x: any) => ({
+    time: parseInt(x.timestamp),
+    value: parseInt(x.usage.liquidationCount),
   }))
 
   return market
