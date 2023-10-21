@@ -91,109 +91,105 @@ export function HomePage({ show }: any) {
               <Skeleton key={6} variant="rounded" height={240} width={360} />,
             ]
           : markets.map((x) => (
-              <Tooltip
-                title="Open detailed usage and accounting view."
+              <Card
                 key={x.configuration.symbol}
+                component={Link}
+                to={`/market/${x.networkIndex}/${x.configuration.id}`}
+                variant="outlined"
+                sx={(theme) => ({
+                  transition: theme.transitions.create(["transform", "background-color"], {
+                    duration: theme.transitions.duration.shortest,
+                    // easing: theme.transitions.easing.sharp
+                  }),
+                  textDecoration: "none",
+                  "&:hover": {
+                    backgroundColor:
+                      "rgba(var(--mui-palette-primary-mainChannel) / var(--mui-palette-action-hoverOpacity))",
+                    // transform: "scale(1)",
+                  },
+                  "&:active": {
+                    transform: "scale(0.985)",
+                  },
+                  padding: 2,
+                  display: "inherit",
+                  minWidth: 360,
+                  "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
+                    backdropFilter: "blur(2px)",
+                  },
+                })}
               >
-                <Card
-                  component={Link}
-                  to={`/market/${x.networkIndex}/${x.configuration.id}`}
-                  variant="outlined"
-                  sx={(theme) => ({
-                    transition: theme.transitions.create(["transform", "background-color"], {
-                      duration: theme.transitions.duration.shortest,
-                      // easing: theme.transitions.easing.sharp
-                    }),
-                    textDecoration: "none",
-                    "&:hover": {
-                      backgroundColor:
-                        "rgba(var(--mui-palette-primary-mainChannel) / var(--mui-palette-action-hoverOpacity))",
-                      // transform: "scale(1)",
-                    },
-                    "&:active": {
-                      transform: "scale(0.985)",
-                    },
-                    padding: 2,
-                    display: "inherit",
-                    minWidth: 360,
-                    "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
-                      backdropFilter: "blur(2px)",
-                    },
-                  })}
-                >
-                  <Stack gap={2}>
-                    <Stack gap={2} direction="row" alignItems="flex-start">
-                      <Badge
-                        overlap="circular"
-                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                        badgeContent={
-                          <Avatar
-                            sx={{
-                              width: 32,
-                              height: 32,
-                              border: "2px solid var(--mui-palette-background-default)",
-                            }}
-                            src={NETWORK_IMAGES[x.networkIndex]}
-                          />
-                        }
-                      >
+                <Stack gap={2}>
+                  <Stack gap={2} direction="row" alignItems="flex-start">
+                    <Badge
+                      overlap="circular"
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      badgeContent={
                         <Avatar
-                          sx={{ width: 48, height: 48 }}
-                          src={`https://app.compound.finance/images/assets/asset_${x.configuration.baseToken.token.symbol}.svg`}
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            border: "2px solid var(--mui-palette-background-default)",
+                          }}
+                          src={NETWORK_IMAGES[x.networkIndex]}
                         />
-                      </Badge>
-                      <Stack>
-                        <Typography variant="h5" fontFamily={RobotoSerifFF}>
-                          {x.configuration.baseToken.token.name}
-                        </Typography>
-                        <Typography
-                          color="text.secondary"
-                          variant="subtitle2"
-                          fontFamily={RobotoSerifFF}
-                        >
-                          {NETWORK_LABELS[x.networkIndex]}
-                        </Typography>
-                      </Stack>
+                      }
+                    >
+                      <Avatar
+                        sx={{ width: 48, height: 48 }}
+                        src={`https://app.compound.finance/images/assets/asset_${x.configuration.baseToken.token.symbol}.svg`}
+                      />
+                    </Badge>
+                    <Stack>
+                      <Typography variant="h5" fontFamily={RobotoSerifFF}>
+                        {x.configuration.baseToken.token.name}
+                      </Typography>
+                      <Typography
+                        color="text.secondary"
+                        variant="subtitle2"
+                        fontFamily={RobotoSerifFF}
+                      >
+                        {NETWORK_LABELS[x.networkIndex]}
+                      </Typography>
                     </Stack>
-                    <Stack gap={0.5}>
-                      <Statistic
-                        label="Supplied"
-                        value={formatNumber(
-                          x.accounting.totalBaseSupply /
-                            10 ** x.configuration.baseToken.token.decimals,
-                          2,
-                          "compact"
-                        )}
-                        tokenSymbol={x.configuration.baseToken.token.symbol}
-                        usdValue={formatNumber(x.accounting.totalBaseSupplyUsd, 2, "compact")}
-                      />
-                      <Statistic
-                        label="Borrowed"
-                        value={formatNumber(
-                          x.accounting.totalBaseBorrow /
-                            10 ** x.configuration.baseToken.token.decimals,
-                          2,
-                          "compact"
-                        )}
-                        tokenSymbol={x.configuration.baseToken.token.symbol}
-                        usdValue={formatNumber(x.accounting.totalBaseBorrowUsd, 2, "compact")}
-                      />
-                      <Statistic
-                        label="Utilization"
-                        value={
-                          <>
-                            <RadialPercentage percentage={x.accounting.utilization} />
-                            {formatNumber(x.accounting.utilization * 100, 2)}%
-                          </>
-                        }
-                      />
-                    </Stack>
-                    {/* <Typography fontFamily={RobotoMonoFF}>
+                  </Stack>
+                  <Stack gap={0.5}>
+                    <Statistic
+                      label="Supplied"
+                      value={formatNumber(
+                        x.accounting.totalBaseSupply /
+                          10 ** x.configuration.baseToken.token.decimals,
+                        2,
+                        "compact"
+                      )}
+                      tokenSymbol={x.configuration.baseToken.token.symbol}
+                      usdValue={formatNumber(x.accounting.totalBaseSupplyUsd, 2, "compact")}
+                    />
+                    <Statistic
+                      label="Borrowed"
+                      value={formatNumber(
+                        x.accounting.totalBaseBorrow /
+                          10 ** x.configuration.baseToken.token.decimals,
+                        2,
+                        "compact"
+                      )}
+                      tokenSymbol={x.configuration.baseToken.token.symbol}
+                      usdValue={formatNumber(x.accounting.totalBaseBorrowUsd, 2, "compact")}
+                    />
+                    <Statistic
+                      label="Utilization"
+                      value={
+                        <>
+                          <RadialPercentage percentage={x.accounting.utilization} />
+                          {formatNumber(x.accounting.utilization * 100, 2)}%
+                        </>
+                      }
+                    />
+                  </Stack>
+                  {/* <Typography fontFamily={RobotoMonoFF}>
                   Collateral {formatNumber(x.accounting.collateralBalanceUsd, 2, "compact")} USD{" "}
                 </Typography> */}
-                  </Stack>
-                </Card>
-              </Tooltip>
+                </Stack>
+              </Card>
             ))}
       </AnimatedList>
     </AnimatedList>
