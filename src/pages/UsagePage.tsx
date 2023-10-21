@@ -79,20 +79,6 @@ export function UsagePage({ show, protocol }: any) {
           <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
         )}
       </div>
-      <div>
-        <Typography variant="h6" fontFamily={RobotoSerifFF} gutterBottom>
-          Liquidations
-        </Typography>
-        {stats ? (
-          <Chart
-            data={stats.liquidations}
-            significantDigits={0}
-            unitLabel="liquidations"
-          />
-        ) : (
-          <Skeleton key={1} variant="rounded" height={400} width={"100%"} />
-        )}
-      </div>
     </AnimatedList>
   )
 }
