@@ -10,6 +10,7 @@ import { useTransition, a } from "@react-spring/web"
 import { MarketPage } from "./pages/MarketPage"
 import { ProtocolPage } from "./pages/ProtocolPage"
 import { RobotoSerifFF } from "./theme"
+import { LiquidationsPage } from "./pages/LiquidationsPage"
 
 export default function App() {
   const location = useLocation()
@@ -48,7 +49,7 @@ export default function App() {
           </Typography>
         </>
         <Tabs
-          value={location.pathname === "/" ? 0 : 1}
+          value={location.pathname === "/" ? 0 : location.pathname === "/markets" ? 1 : 2}
           sx={(theme) => ({
             marginBottom: 4,
             marginLeft: -2,
@@ -87,6 +88,16 @@ export default function App() {
             to="/markets"
             component={Link}
           />
+          <Tab
+            label={
+              <Typography variant="h6" fontFamily={RobotoSerifFF}>
+                Liquidations
+              </Typography>
+            }
+            disableRipple
+            to="/liquidations"
+            component={Link}
+          />
         </Tabs>
         {transitions((styles, item) => (
           <a.div
@@ -109,6 +120,10 @@ export default function App() {
               <Route
                 path="/market/:networkIndex/:marketId"
                 element={<MarketPage show={location.pathname.includes("/market/")} />}
+              />
+              <Route
+                path="/liquidations"
+                element={<LiquidationsPage show={location.pathname === "/liquidations"} />}
               />
             </Routes>
           </a.div>

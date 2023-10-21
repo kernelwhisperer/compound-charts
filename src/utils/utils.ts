@@ -1,5 +1,7 @@
 export type NumberNotation = "standard" | "scientific" | "engineering" | "compact" | undefined
 
+export const TZ_OFFSET = new Date().getTimezoneOffset() * 60 * 1000
+
 export function formatNumber(
   number: number,
   digits: number,
@@ -8,6 +10,19 @@ export function formatNumber(
   return new Intl.NumberFormat(undefined, {
     maximumFractionDigits: digits,
     minimumFractionDigits: digits,
+    notation,
+  }).format(number)
+}
+
+export function formatUsdc(
+  number: number,
+  digits: number,
+  notation: NumberNotation = "standard"
+) {
+  return new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: 6,
+    minimumFractionDigits: 0,
+    maximumSignificantDigits: 2,
     notation,
   }).format(number)
 }
@@ -30,6 +45,14 @@ export function formatTime(time) {
   return new Intl.DateTimeFormat(window.navigator.language, {
     dateStyle: "long",
     hourCycle: "h23",
+  }).format(time)
+}
+
+export function formatTimeWithHour(time) {
+  return new Intl.DateTimeFormat(window.navigator.language, {
+    dateStyle: "medium",
+    hourCycle: "h23",
+    timeStyle: "short"
   }).format(time)
 }
 
@@ -67,4 +90,17 @@ export function mergeAndReverse(markets, metricName, avg = false) {
   }
 
   return merged.reverse()
+}
+
+export function formatHex(addr: string) {
+  return `${addr.slice(0, 5)}...${addr.slice(-3)}`
+}
+
+export function getExplorerLink(networkIndex: number, addr: string, type: string) {
+  if (networkIndex === 0) return `https://etherscan.io/${type}/${addr}`
+  if (networkIndex === 1) return `https://arbiscan.io/${type}/${addr}`
+  if (networkIndex === 2) return `https://polygonscan.com/${type}/${addr}`
+  if (networkIndex === 3) return `https://basescan.org/${type}/${addr}`
+  
+  return ""
 }

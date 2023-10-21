@@ -2,20 +2,20 @@ import { createClient, fetchExchange } from "urql/core"
 
 const ethClient = createClient({
   exchanges: [fetchExchange],
-  // url: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3-mainnet",
-  url: "https://gateway-arbitrum.network.thegraph.com/api/6b4801789dca4e33fb0b7a051d93c910/subgraphs/id/5nwMCSHaTqG3Kd2gHznbTXEnZ9QNWsssQfbHhDqQSQFp",
+  url: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3-mainnet",
+  // url: "https://gateway-arbitrum.network.thegraph.com/api/6b4801789dca4e33fb0b7a051d93c910/subgraphs/id/5nwMCSHaTqG3Kd2gHznbTXEnZ9QNWsssQfbHhDqQSQFp",
 })
 
 const arbClient = createClient({
   exchanges: [fetchExchange],
-  // url: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3-arbitrum",
-  url: "https://gateway-arbitrum.network.thegraph.com/api/6b4801789dca4e33fb0b7a051d93c910/subgraphs/id/Ff7ha9ELmpmg81D6nYxy4t8aGP26dPztqD1LDJNPqjLS",
+  url: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3-arbitrum",
+  // url: "https://gateway-arbitrum.network.thegraph.com/api/6b4801789dca4e33fb0b7a051d93c910/subgraphs/id/Ff7ha9ELmpmg81D6nYxy4t8aGP26dPztqD1LDJNPqjLS",
 })
 
 const polygonClient = createClient({
   exchanges: [fetchExchange],
-  // url: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3-polygon",
-  url: "https://gateway-arbitrum.network.thegraph.com/api/6b4801789dca4e33fb0b7a051d93c910/subgraphs/id/AaFtUWKfFdj2x8nnE3RxTSJkHwGHvawH3VWFBykCGzLs",
+  url: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-v3-polygon",
+  // url: "https://gateway-arbitrum.network.thegraph.com/api/6b4801789dca4e33fb0b7a051d93c910/subgraphs/id/AaFtUWKfFdj2x8nnE3RxTSJkHwGHvawH3VWFBykCGzLs",
 })
 
 const baseClient = createClient({
